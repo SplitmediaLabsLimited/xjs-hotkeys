@@ -11,6 +11,10 @@
   "devDependencies": {
     "react-scripts": "1.0.10"
   },
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/xjsframework/xjs-hotkeys.git"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
