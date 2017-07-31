@@ -16,47 +16,35 @@ export default class KeyStrokeHandler {
 
   static initializeHook() {
     let dll = KeyStrokeHandler._xjs.Dll;
-    dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']);
-    dll.on("access-granted", function() {
-      window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(this);
-      dll
-        .callEx("xsplit.HookSubscribe")
-        .then(function() {})
-        .catch(function(err) {
+    dll.load(["Scriptdlls\\SplitMediaLabs\\XjsEx.dll"]);
+    dll.on("access-granted", () => {
+      window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(dll);
+      dll.callEx("xsplit.HookSubscribe").then(() => {}).catch(err => {
+        console.error(err.message);
+      });
+    });
+
+    dll.on("access-revoked", () => {
+      window.OnDllOnInputHookEvent = () => {};
+    });
+
+    dll.isAccessGranted().then(isGranted => {
+      if (isGranted) {
+        window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(dll);
+        dll.callEx("xsplit.HookSubscribe").then(() => {}).catch(err => {
           console.error(err.message);
         });
-    });
-
-    dll.on("access-revoked", function() {
-      window.OnDllOnInputHookEvent = function() {};      
-    });
-
-    dll.isAccessGranted().then(function(isGranted) {
-      if (isGranted) {
-        window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(
-          this
-        );
-        dll
-          .callEx("xsplit.HookSubscribe")
-          .then(function() {})
-          .catch(function(err) {
-            console.error(err.message);
-          });
       } else {
-        window.OnDllOnInputHookEvent = function() {};
+        window.OnDllOnInputHookEvent = () => {};
       }
     });
   }
 
-  static readHookEvent(msg, wparam, lparam) { 
+  static readHookEvent(msg, wparam, lparam) {
     let _hookMessageType = KeyStrokeLib.hookMessageType();
-    //reject special keys
-    if (KeyStrokeLib.restrictedSpecialKeys.hasOwnProperty(wparam)) {
-      return;
-    }
 
     //identify message type
-    switch (parseInt(msg)) {
+    switch (parseInt(msg, 10)) {
       case _hookMessageType.WM_KEYDOWN:
       case _hookMessageType.WM_SYSKEYDOWN:
         KeyStrokeHandler.handleKeydown(wparam, lparam);
@@ -103,28 +91,24 @@ export default class KeyStrokeHandler {
     _newSortedMap.forEach((value, key, map) => {
       _keyPress = _keyPress + _sep + key;
       _sep = "+";
-    });  
+    });
 
     let _wParam = KeyStrokeLib.wParamMap();
-    if (Array.isArray(_wParam[wparam])) {
-      if ((parseInt(lparam) & 0x01000000) === 0x01000000) {
-        _keyPress = _keyPress + _sep + _wParam[wparam][1];
-      } else {
-        _keyPress = _keyPress + _sep + _wParam[wparam][0];
-      }
-    } else {
-      _keyPress = _keyPress + _sep + _wParam[wparam];
-    }   
+    _keyPress = _keyPress + _sep + _wParam[wparam];
 
     if (_keyPress && _keyPress !== "")
-      KeyStrokeHandler._eventEmitter.emit(_keyPress);
+      KeyStrokeHandler._eventEmitter.emit(_keyPress, _keyPress);
   }
 
   static on(event, handler) {
-    KeyStrokeHandler._eventEmitter.on(event, handler);
+    if (event && event !== "" && event !== "None") {
+      KeyStrokeHandler._eventEmitter.on(event, handler);
+    }
   }
 
   static off(event, handler) {
-    KeyStrokeHandler._eventEmitter.off(event, handler);
+    if (event && event !== "" && event !== "None") {
+      KeyStrokeHandler._eventEmitter.off(event, handler);
+    }
   }
 }

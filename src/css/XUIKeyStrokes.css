@@ -1,0 +1,45 @@
+.xui-keyStroke {
+	background-color: #212121;
+	color: #CCC;	
+	position: relative;	
+	display: inline-block;
+}
+
+.xui-keyStroke input {
+	color: #CCCCCC;
+	width: 120px;
+	padding: 0 20px 1px 5px;
+	font-size: 12px;
+	line-height: 16px;
+	vertical-align: middle;
+	margin: 0;
+	outline: none;
+}
+
+.xui-keyStroke input:disabled {
+	background: none;
+	cursor: default;
+	box-shadow: none;
+	color: #888;
+}
+
+.xui-keyStroke input:focus {	
+	color: #000;
+}
+
+.xui-keyStroke button[name=delete] {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border: none;
+	background-color: transparent;
+	background-image: url("../images/close.png");
+	margin-left: -15px;
+	padding: 0;
+	outline: none;
+}
+
+.xui-keyStroke button[name=delete]:hover,
+.xui-keyStroke button[name=delete]:focus {	
+	background-image: url("../images/close_hover.png");	
+}

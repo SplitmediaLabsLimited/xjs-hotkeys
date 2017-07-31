@@ -1,21 +1,67 @@
 import React, { Component } from "react";
+import KeyStrokeLib from "../lib/KeyStrokeLib.js";
+import "../../../src/css/XUIKeyStrokes.css";
+
+const _NO_HOTKEY_VALUE = "None";
 
 class XUIKeyStrokes extends Component {
   constructor(props) {
     super();
     this.onValueChange = this.onValueChange.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onDeleteClick = this.onDeleteClick.bind(this);
     this.getInputKeyStoke = this.getInputKeyStoke.bind(this);
     this.getValueOnSave = this.getValueOnSave.bind(this);
     this.inputKeyStroke = null;
+    this.state = { previousValue: _NO_HOTKEY_VALUE };
   }
 
-  onValueChange(event) {
-    let eventValue = event.target.value;
+  onValueChange(value, dataKey) {
+    let eventValue = value;
+    this.setState({ previousValue: eventValue });
+    this.inputKeyStroke.value = value;
+    this.inputKeyStroke.focus();
     this.props.onValueChange({
-      inputKey: event.target.dataset.key,
+      inputKey: dataKey,
       value: eventValue,
       label: eventValue
     });
+  }
+
+  onKeyDown(event) {
+    
+    event.preventDefault();
+
+    let pressed = "";
+    let sep = "";
+
+    if (event.altKey) {
+      pressed = pressed + sep + "Alt";
+      sep = "+";
+    }
+
+    if (event.ctrlKey) {
+      pressed = pressed + sep + "Ctrl";
+      sep = "+";
+    }
+
+    if (event.shiftKey) {
+      pressed = pressed + sep + "Shift";
+      sep = "+";
+    }
+
+    let _wpParamMap = KeyStrokeLib.wParamMap();
+    let _combinedKeys = KeyStrokeLib._combinedKeyPressed;
+
+    if (_wpParamMap[event.which] && !_combinedKeys[event.which]) {
+      pressed = pressed + sep + _wpParamMap[event.which];
+      event.target.value = pressed;
+      this.onValueChange(pressed, event.target.dataset.key);
+    }
+  }
+
+  onDeleteClick(event) {
+    this.onValueChange(_NO_HOTKEY_VALUE, this.props.inputName);
   }
 
   getInputKeyStoke(ref) {
@@ -30,7 +76,7 @@ class XUIKeyStrokes extends Component {
   }
 
   render() {
-    let defaultValue = 0;
+    let defaultValue = "None";
     if (
       typeof this.props.placeholderText !== "undefined" &&
       typeof this.props.value === "undefined"
@@ -46,8 +92,9 @@ class XUIKeyStrokes extends Component {
           ref={this.getInputKeyStoke}
           defaultValue={defaultValue}
           data-key={this.props.inputName}
-          onChange={this.onValueChange}
+          onKeyDown={this.onKeyDown}
         />
+        <button name="delete" onClick={this.onDeleteClick} />
       </div>
     );
   }

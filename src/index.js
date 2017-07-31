@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "./css/index.css";
 import registerServiceWorker from "./registerServiceWorker";
 import KeyStrokeHandler from "./js/lib/KeyStrokeHandler.js";
+import XUIKeyStrokes from "./js/component/XUIKeyStrokes.js";
 import xjs from "../node_modules/xjs-framework/dist/xjs-es2015.min.js";
 
 document.onselectstart = function(event) {
@@ -32,32 +33,42 @@ document.oncontextmenu = function() {
   return false;
 };
 
-let event1 = "S";
-let event2 = "A";
-let event3 = "Ctrl+S";
-let event4 = "Alt+Ctrl+Shift+Q";
-
-function messageFunc1(){ 
-  console.log("Function: " + event1); 
-}
-
-function messageFunc2(){ 
-  console.log("Function: " + event2); 
-}
-
-function messageFunc3(){ 
-  console.log("Function: " + event3); 
-}
-
-function messageFunc4(){ 
-  console.log("Function: " + event4); 
-}
-
-xjs.ready().then(() => {  
+xjs.ready().then(() => {
   KeyStrokeHandler.initialize(xjs);
-  window.SomeKeyHandler = KeyStrokeHandler; 
-  KeyStrokeHandler.on(event1, messageFunc1);
-  KeyStrokeHandler.on(event2, messageFunc2);
-  KeyStrokeHandler.on(event3, messageFunc3);
-  KeyStrokeHandler.on(event4, messageFunc4);  
+
+  let hotKey = obj => {
+    console.log("HotKey: emitted event " + obj);
+  };
+
+  let changeFunc = obj => {
+    console.log(obj);
+  };
+
+  let clickOn = () => {
+    let input = document.querySelectorAll('[data-key="keyStroke1"]')[0];
+    KeyStrokeHandler.on(input.value, hotKey);
+  };
+
+  let clickOff = () => {
+    let input = document.querySelectorAll('[data-key="keyStroke1"]')[0];
+    KeyStrokeHandler.off(input.value, hotKey);
+  };
+
+  let renderReact = () => {
+    ReactDOM.render(
+      <div>
+        <XUIKeyStrokes
+          placeholderText="None"
+          inputName="keyStroke1"
+          onValueChange={changeFunc}
+          onInitialization={changeFunc}
+        />
+        <button onClick={clickOn}>On</button>
+        <button onClick={clickOff}>Off</button>
+      </div>,
+      document.getElementById("root")
+    );
+    registerServiceWorker();
+  };
+  renderReact();
 });
