@@ -1,12 +1,13 @@
 import Evemit from "evemit";
 import KeyStrokeLib from "./KeyStrokeLib.js";
 
-class KeyStrokeHandler {
-  static _eventEmitter = new Evemit();
+export default class KeyStrokeHandler {
+  static _eventEmitter; 
   static _xjs;
 
   static initialize(xjsObj) {
     KeyStrokeHandler._xjs = xjsObj;
+    KeyStrokeHandler._eventEmitter = new Evemit();
     if (KeyStrokeHandler._xjs && KeyStrokeHandler._xjs.hasOwnProperty("Dll")) {
       KeyStrokeHandler.initializeHook();
     } else {
@@ -59,14 +60,14 @@ class KeyStrokeHandler {
   }
 
   static handleKeydown(wparam, lparam) {
-    if (KeyStrokeLib._combinedKeyPressed.hasOwnProperty(wparam)) {
-      KeyStrokeLib._combinedKeyPressed[wparam].active = true;
+    if ((KeyStrokeLib._combinedKeyPressed()).hasOwnProperty(wparam)) {
+      (KeyStrokeLib._combinedKeyPressed())[wparam].active = true;
     }
   }
 
   static handleKeyup(wparam, lparam) {
-    if (KeyStrokeLib._combinedKeyPressed.hasOwnProperty(wparam)) {
-      KeyStrokeLib._combinedKeyPressed[wparam].active = false;
+    if ((KeyStrokeLib._combinedKeyPressed()).hasOwnProperty(wparam)) {
+      (KeyStrokeLib._combinedKeyPressed())[wparam].active = false;
     } else if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
       KeyStrokeHandler.processKeyEvent(wparam, lparam);
     }
@@ -75,11 +76,11 @@ class KeyStrokeHandler {
   static processKeyEvent(wparam, lparam) {
     let _combinedKeysMap = new Map();
     let _keyPress = "";
-    for (let key in KeyStrokeLib._combinedKeyPressed) {
-      if (KeyStrokeLib._combinedKeyPressed.hasOwnProperty(key)) {
-        if (KeyStrokeLib._combinedKeyPressed[key].active) {
+    for (let key in KeyStrokeLib._combinedKeyPressed()) {
+      if ((KeyStrokeLib._combinedKeyPressed()).hasOwnProperty(key)) {
+        if ((KeyStrokeLib._combinedKeyPressed())[key].active) {
           _combinedKeysMap.set(
-            KeyStrokeLib._combinedKeyPressed[key].value,
+            (KeyStrokeLib._combinedKeyPressed())[key].value,
             key
           );
         }
@@ -112,5 +113,3 @@ class KeyStrokeHandler {
     }
   }
 }
-
-export default KeyStrokeHandler;

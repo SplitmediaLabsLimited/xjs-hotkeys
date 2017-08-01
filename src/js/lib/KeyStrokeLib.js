@@ -177,8 +177,7 @@ const SPECIALKEYS = {
   123: "F12"
 };
 
-class KeyStrokeLib {
-  static _combinedKeyPressed = {
+let _combinedKeyPressed = {
     160: {
       active: false,
       value: "Shift"
@@ -205,6 +204,12 @@ class KeyStrokeLib {
     }
   };
 
+export default class KeyStrokeLib {
+  
+  static _combinedKeyPressed() {
+    return _combinedKeyPressed;
+  }    
+
   static wParamMap() {
     return W_PARAM_MAP;
   }
@@ -221,5 +226,3 @@ class KeyStrokeLib {
     return SPECIALKEYS;
   }
 }
-
-export default KeyStrokeLib;
