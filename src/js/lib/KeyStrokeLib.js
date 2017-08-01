@@ -177,7 +177,7 @@ const SPECIALKEYS = {
   123: "F12"
 };
 
-export default class KeyStrokeLib {
+class KeyStrokeLib {
   static _combinedKeyPressed = {
     160: {
       active: false,
@@ -221,3 +221,5 @@ export default class KeyStrokeLib {
     return SPECIALKEYS;
   }
 }
+
+export default KeyStrokeLib
