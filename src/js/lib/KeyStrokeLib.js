@@ -222,4 +222,4 @@ class KeyStrokeLib {
   }
 }
 
-export default KeyStrokeLib
+export default KeyStrokeLib;

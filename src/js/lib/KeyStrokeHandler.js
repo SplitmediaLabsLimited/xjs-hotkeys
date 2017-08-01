@@ -113,4 +113,4 @@ class KeyStrokeHandler {
   }
 }
 
-export default KeyStrokeHandler
+export default KeyStrokeHandler;
