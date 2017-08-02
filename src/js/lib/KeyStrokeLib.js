@@ -204,7 +204,7 @@ let _combinedKeyPressed = {
     }
   };
 
-class KeyStrokeLib {
+export class KeyStrokeLib {
   
   static _combinedKeyPressed() {
     return _combinedKeyPressed;
@@ -226,5 +226,3 @@ class KeyStrokeLib {
     return SPECIALKEYS;
   }
 }
-
-export default KeyStrokeLib

@@ -1,13 +1,12 @@
 import Evemit from "evemit";
-import KeyStrokeLib from "./KeyStrokeLib.js";
+import { KeyStrokeLib } from "./KeyStrokeLib.js";
 
-class KeyStrokeHandler {
-  static _eventEmitter; 
-  static _xjs;
+export default class KeyStrokeHandler {
+  static _eventEmitter = new Evemit(); 
+  static _xjs = {};
 
   static initialize(xjsObj) {
-    KeyStrokeHandler._xjs = xjsObj;
-    KeyStrokeHandler._eventEmitter = new Evemit();
+    KeyStrokeHandler._xjs = xjsObj;   
     if (KeyStrokeHandler._xjs && KeyStrokeHandler._xjs.hasOwnProperty("Dll")) {
       KeyStrokeHandler.initializeHook();
     } else {
@@ -113,5 +112,3 @@ class KeyStrokeHandler {
     }
   }
 }
-
-export default KeyStrokeHandler;

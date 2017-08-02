@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import KeyStrokeLib from "../lib/KeyStrokeLib.js";
 import "../../../src/css/XUIKeyStrokes.css";
+import { KeyStrokeLib } from "../lib/KeyStrokeLib.js";
 
 const _NO_HOTKEY_VALUE = "None";
 

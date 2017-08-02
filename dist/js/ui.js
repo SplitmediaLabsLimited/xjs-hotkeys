@@ -1001,7 +1001,7 @@ var _combinedKeyPressed2 = {
   }
 };
 
-var KeyStrokeLib = function () {
+var KeyStrokeLib = exports.KeyStrokeLib = function () {
   function KeyStrokeLib() {
     _classCallCheck(this, KeyStrokeLib);
   }
@@ -1035,8 +1035,6 @@ var KeyStrokeLib = function () {
 
   return KeyStrokeLib;
 }();
-
-exports.default = KeyStrokeLib;
 
 /***/ }),
 /* 6 */
@@ -2372,11 +2370,9 @@ var _react = __webpack_require__(21);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _KeyStrokeLib = __webpack_require__(5);
-
-var _KeyStrokeLib2 = _interopRequireDefault(_KeyStrokeLib);
-
 __webpack_require__(19);
+
+var _KeyStrokeLib = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2443,8 +2439,8 @@ var XUIKeyStrokes = function (_Component) {
         sep = "+";
       }
 
-      var _wpParamMap = _KeyStrokeLib2.default.wParamMap();
-      var _combinedKeys = _KeyStrokeLib2.default._combinedKeyPressed;
+      var _wpParamMap = _KeyStrokeLib.KeyStrokeLib.wParamMap();
+      var _combinedKeys = _KeyStrokeLib.KeyStrokeLib._combinedKeyPressed;
 
       if (_wpParamMap[event.which] && !_combinedKeys[event.which]) {
         pressed = pressed + sep + _wpParamMap[event.which];

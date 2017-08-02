@@ -278,8 +278,6 @@ var _evemit2 = _interopRequireDefault(_evemit);
 
 var _KeyStrokeLib = __webpack_require__(5);
 
-var _KeyStrokeLib2 = _interopRequireDefault(_KeyStrokeLib);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -295,7 +293,6 @@ var KeyStrokeHandler = function () {
     key: "initialize",
     value: function initialize(xjsObj) {
       KeyStrokeHandler._xjs = xjsObj;
-      KeyStrokeHandler._eventEmitter = new _evemit2.default();
       if (KeyStrokeHandler._xjs && KeyStrokeHandler._xjs.hasOwnProperty("Dll")) {
         KeyStrokeHandler.initializeHook();
       } else {
@@ -332,7 +329,7 @@ var KeyStrokeHandler = function () {
   }, {
     key: "readHookEvent",
     value: function readHookEvent(msg, wparam, lparam) {
-      var _hookMessageType = _KeyStrokeLib2.default.hookMessageType();
+      var _hookMessageType = _KeyStrokeLib.KeyStrokeLib.hookMessageType();
 
       //identify message type
       switch (parseInt(msg, 10)) {
@@ -351,16 +348,16 @@ var KeyStrokeHandler = function () {
   }, {
     key: "handleKeydown",
     value: function handleKeydown(wparam, lparam) {
-      if (_KeyStrokeLib2.default._combinedKeyPressed().hasOwnProperty(wparam)) {
-        _KeyStrokeLib2.default._combinedKeyPressed()[wparam].active = true;
+      if (_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed().hasOwnProperty(wparam)) {
+        _KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()[wparam].active = true;
       }
     }
   }, {
     key: "handleKeyup",
     value: function handleKeyup(wparam, lparam) {
-      if (_KeyStrokeLib2.default._combinedKeyPressed().hasOwnProperty(wparam)) {
-        _KeyStrokeLib2.default._combinedKeyPressed()[wparam].active = false;
-      } else if (_KeyStrokeLib2.default.wParamMap().hasOwnProperty(wparam)) {
+      if (_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed().hasOwnProperty(wparam)) {
+        _KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()[wparam].active = false;
+      } else if (_KeyStrokeLib.KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
         KeyStrokeHandler.processKeyEvent(wparam, lparam);
       }
     }
@@ -369,10 +366,10 @@ var KeyStrokeHandler = function () {
     value: function processKeyEvent(wparam, lparam) {
       var _combinedKeysMap = new Map();
       var _keyPress = "";
-      for (var key in _KeyStrokeLib2.default._combinedKeyPressed()) {
-        if (_KeyStrokeLib2.default._combinedKeyPressed().hasOwnProperty(key)) {
-          if (_KeyStrokeLib2.default._combinedKeyPressed()[key].active) {
-            _combinedKeysMap.set(_KeyStrokeLib2.default._combinedKeyPressed()[key].value, key);
+      for (var key in _KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()) {
+        if (_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed().hasOwnProperty(key)) {
+          if (_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()[key].active) {
+            _combinedKeysMap.set(_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()[key].value, key);
           }
         }
       }
@@ -384,7 +381,7 @@ var KeyStrokeHandler = function () {
         _sep = "+";
       });
 
-      var _wParam = _KeyStrokeLib2.default.wParamMap();
+      var _wParam = _KeyStrokeLib.KeyStrokeLib.wParamMap();
       _keyPress = _keyPress + _sep + _wParam[wparam];
 
       if (_keyPress && _keyPress !== "") KeyStrokeHandler._eventEmitter.emit(_keyPress, _keyPress);
@@ -408,6 +405,8 @@ var KeyStrokeHandler = function () {
   return KeyStrokeHandler;
 }();
 
+KeyStrokeHandler._eventEmitter = new _evemit2.default();
+KeyStrokeHandler._xjs = {};
 exports.default = KeyStrokeHandler;
 
 /***/ }),
@@ -632,7 +631,7 @@ var _combinedKeyPressed2 = {
   }
 };
 
-var KeyStrokeLib = function () {
+var KeyStrokeLib = exports.KeyStrokeLib = function () {
   function KeyStrokeLib() {
     _classCallCheck(this, KeyStrokeLib);
   }
@@ -666,8 +665,6 @@ var KeyStrokeLib = function () {
 
   return KeyStrokeLib;
 }();
-
-exports.default = KeyStrokeLib;
 
 /***/ })
 
