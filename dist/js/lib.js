@@ -293,41 +293,49 @@ var KeyStrokeHandler = function () {
   }
 
   _createClass(KeyStrokeHandler, null, [{
-    key: "initialize",
-    value: function initialize(xjsObj) {
+    key: "assignXjs",
+    value: function assignXjs(xjsObj) {
+      _KeyStrokeHandlerXJS = xjsObj;
+      if (!_KeyStrokeHandlerXJS && !_KeyStrokeHandlerXJS.hasOwnProperty("Dll")) {
+        return new Error("Invalid xjs object parameter");
+      }
+    }
+  }, {
+    key: "initWithXjsDllHook",
+    value: function initWithXjsDllHook(xjsObj) {
       _KeyStrokeHandlerXJS = xjsObj;
       if (_KeyStrokeHandlerXJS && _KeyStrokeHandlerXJS.hasOwnProperty("Dll")) {
-        KeyStrokeHandler.initializeHook();
+        var dll = _KeyStrokeHandlerXJS.Dll;
+        dll.load(["Scriptdlls\\SplitMediaLabs\\XjsEx.dll"]);
+        dll.on("access-granted", function () {
+          KeyStrokeHandler.assignHookOnAccessGranted();
+        });
+        dll.on("access-revoked", function () {
+          KeyStrokeHandler.removeHookOnRevoke();
+        });
+        dll.isAccessGranted().then(function (isGranted) {
+          if (isGranted) {
+            KeyStrokeHandler.assignHookOnAccessGranted();
+          } else {
+            KeyStrokeHandler.removeHookOnRevoke();
+          }
+        });
       } else {
         return new Error("Invalid xjs object parameter");
       }
     }
   }, {
-    key: "initializeHook",
-    value: function initializeHook() {
-      var dll = _KeyStrokeHandlerXJS.Dll;
-      dll.load(["Scriptdlls\\SplitMediaLabs\\XjsEx.dll"]);
-      dll.on("access-granted", function () {
-        window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(dll);
-        dll.callEx("xsplit.HookSubscribe").then(function () {}).catch(function (err) {
-          console.error(err.message);
-        });
+    key: "assignHookOnAccessGranted",
+    value: function assignHookOnAccessGranted() {
+      window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(_KeyStrokeHandlerXJS.Dll);
+      _KeyStrokeHandlerXJS.Dll.callEx("xsplit.HookSubscribe").then(function () {}).catch(function (err) {
+        console.error(err.message);
       });
-
-      dll.on("access-revoked", function () {
-        window.OnDllOnInputHookEvent = function () {};
-      });
-
-      dll.isAccessGranted().then(function (isGranted) {
-        if (isGranted) {
-          window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(dll);
-          dll.callEx("xsplit.HookSubscribe").then(function () {}).catch(function (err) {
-            console.error(err.message);
-          });
-        } else {
-          window.OnDllOnInputHookEvent = function () {};
-        }
-      });
+    }
+  }, {
+    key: "removeHookOnRevoke",
+    value: function removeHookOnRevoke() {
+      window.OnDllOnInputHookEvent = function () {};
     }
   }, {
     key: "readHookEvent",

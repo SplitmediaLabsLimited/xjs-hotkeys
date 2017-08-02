@@ -137,7 +137,7 @@ const RESTRICTED_SPECIALKEYS = {
   110: ".",
   111: "/",
   144: "NumLock",
-  145: "ScrollLock" 
+  145: "ScrollLock"
 };
 
 //special keys
@@ -178,37 +178,36 @@ const SPECIALKEYS = {
 };
 
 let _combinedKeyPressed = {
-    160: {
-      active: false,
-      value: "Shift"
-    },
-    161: {
-      active: false,
-      value: "Shift"
-    },
-    162: {
-      active: false,
-      value: "Ctrl"
-    },
-    163: {
-      active: false,
-      value: "Ctrl"
-    },
-    164: {
-      active: false,
-      value: "Alt"
-    },
-    165: {
-      active: false,
-      value: "Alt"
-    }
-  };
+  160: {
+    active: false,
+    value: "Shift"
+  },
+  161: {
+    active: false,
+    value: "Shift"
+  },
+  162: {
+    active: false,
+    value: "Ctrl"
+  },
+  163: {
+    active: false,
+    value: "Ctrl"
+  },
+  164: {
+    active: false,
+    value: "Alt"
+  },
+  165: {
+    active: false,
+    value: "Alt"
+  }
+};
 
 export class KeyStrokeLib {
-  
   static _combinedKeyPressed() {
     return _combinedKeyPressed;
-  }    
+  }
 
   static wParamMap() {
     return W_PARAM_MAP;

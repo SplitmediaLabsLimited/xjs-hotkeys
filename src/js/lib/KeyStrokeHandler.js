@@ -1,44 +1,55 @@
 import Evemit from "evemit";
 import { KeyStrokeLib } from "./KeyStrokeLib.js";
 
-let _KeyStrokeHandlerEventEmitter = new Evemit(); 
-let _KeyStrokeHandlerXJS = {}; 
+let _KeyStrokeHandlerEventEmitter = new Evemit();
+let _KeyStrokeHandlerXJS = {};
 
-export default class KeyStrokeHandler {  
+export default class KeyStrokeHandler {
 
-  static initialize(xjsObj) {
-    _KeyStrokeHandlerXJS = xjsObj;   
+  static assignXjs(xjsObj) {
+    _KeyStrokeHandlerXJS = xjsObj;
+    if (!_KeyStrokeHandlerXJS && !_KeyStrokeHandlerXJS.hasOwnProperty("Dll")) {
+      return new Error("Invalid xjs object parameter");
+    }
+  }
+
+  static initWithXjsDllHook(xjsObj) {
+    _KeyStrokeHandlerXJS = xjsObj;
     if (_KeyStrokeHandlerXJS && _KeyStrokeHandlerXJS.hasOwnProperty("Dll")) {
-      KeyStrokeHandler.initializeHook();
+      let dll = _KeyStrokeHandlerXJS.Dll;
+      dll.load(["Scriptdlls\\SplitMediaLabs\\XjsEx.dll"]);
+      dll.on("access-granted", () => {
+        KeyStrokeHandler.assignHookOnAccessGranted();
+      });
+      dll.on("access-revoked", () => {
+        KeyStrokeHandler.removeHookOnRevoke();
+      });
+      dll.isAccessGranted().then(isGranted => {
+        if (isGranted) {
+          KeyStrokeHandler.assignHookOnAccessGranted();
+        } else {
+          KeyStrokeHandler.removeHookOnRevoke();
+        }
+      });
     } else {
       return new Error("Invalid xjs object parameter");
     }
   }
 
-  static initializeHook() {
-    let dll = _KeyStrokeHandlerXJS.Dll;
-    dll.load(["Scriptdlls\\SplitMediaLabs\\XjsEx.dll"]);
-    dll.on("access-granted", () => {
-      window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(dll);
-      dll.callEx("xsplit.HookSubscribe").then(() => {}).catch(err => {
+  static assignHookOnAccessGranted() {
+    window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(
+      _KeyStrokeHandlerXJS.Dll
+    );
+    _KeyStrokeHandlerXJS.Dll
+      .callEx("xsplit.HookSubscribe")
+      .then(() => {})
+      .catch(err => {
         console.error(err.message);
       });
-    });
+  }
 
-    dll.on("access-revoked", () => {
-      window.OnDllOnInputHookEvent = () => {};
-    });
-
-    dll.isAccessGranted().then(isGranted => {
-      if (isGranted) {
-        window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(dll);
-        dll.callEx("xsplit.HookSubscribe").then(() => {}).catch(err => {
-          console.error(err.message);
-        });
-      } else {
-        window.OnDllOnInputHookEvent = () => {};
-      }
-    });
+  static removeHookOnRevoke() {
+    window.OnDllOnInputHookEvent = () => {};
   }
 
   static readHookEvent(msg, wparam, lparam) {
@@ -60,14 +71,14 @@ export default class KeyStrokeHandler {
   }
 
   static handleKeydown(wparam, lparam) {
-    if ((KeyStrokeLib._combinedKeyPressed()).hasOwnProperty(wparam)) {
-      (KeyStrokeLib._combinedKeyPressed())[wparam].active = true;
+    if (KeyStrokeLib._combinedKeyPressed().hasOwnProperty(wparam)) {
+      KeyStrokeLib._combinedKeyPressed()[wparam].active = true;
     }
   }
 
   static handleKeyup(wparam, lparam) {
-    if ((KeyStrokeLib._combinedKeyPressed()).hasOwnProperty(wparam)) {
-      (KeyStrokeLib._combinedKeyPressed())[wparam].active = false;
+    if (KeyStrokeLib._combinedKeyPressed().hasOwnProperty(wparam)) {
+      KeyStrokeLib._combinedKeyPressed()[wparam].active = false;
     } else if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
       KeyStrokeHandler.processKeyEvent(wparam, lparam);
     }
@@ -77,10 +88,10 @@ export default class KeyStrokeHandler {
     let _combinedKeysMap = new Map();
     let _keyPress = "";
     for (let key in KeyStrokeLib._combinedKeyPressed()) {
-      if ((KeyStrokeLib._combinedKeyPressed()).hasOwnProperty(key)) {
-        if ((KeyStrokeLib._combinedKeyPressed())[key].active) {
+      if (KeyStrokeLib._combinedKeyPressed().hasOwnProperty(key)) {
+        if (KeyStrokeLib._combinedKeyPressed()[key].active) {
           _combinedKeysMap.set(
-            (KeyStrokeLib._combinedKeyPressed())[key].value,
+            KeyStrokeLib._combinedKeyPressed()[key].value,
             key
           );
         }

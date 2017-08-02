@@ -2418,7 +2418,6 @@ var XUIKeyStrokes = function (_Component) {
   }, {
     key: "onKeyDown",
     value: function onKeyDown(event) {
-
       event.preventDefault();
 
       var pressed = "";

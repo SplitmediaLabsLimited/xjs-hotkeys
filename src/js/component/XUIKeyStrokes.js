@@ -29,7 +29,6 @@ class XUIKeyStrokes extends Component {
   }
 
   onKeyDown(event) {
-    
     event.preventDefault();
 
     let pressed = "";
