@@ -1,7 +1,7 @@
 import Evemit from "evemit";
 import KeyStrokeLib from "./KeyStrokeLib.js";
 
-export default class KeyStrokeHandler {
+class KeyStrokeHandler {
   static _eventEmitter; 
   static _xjs;
 
@@ -113,3 +113,5 @@ export default class KeyStrokeHandler {
     }
   }
 }
+
+export default KeyStrokeHandler;
