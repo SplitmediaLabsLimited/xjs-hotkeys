@@ -1,13 +1,14 @@
 import Evemit from "evemit";
 import { KeyStrokeLib } from "./KeyStrokeLib.js";
 
-export default class KeyStrokeHandler {
-  static _eventEmitter = new Evemit(); 
-  static _xjs = {};
+let _KeyStrokeHandlerEventEmitter = new Evemit(); 
+let _KeyStrokeHandlerXJS = {}; 
+
+export default class KeyStrokeHandler {  
 
   static initialize(xjsObj) {
-    KeyStrokeHandler._xjs = xjsObj;   
-    if (KeyStrokeHandler._xjs && KeyStrokeHandler._xjs.hasOwnProperty("Dll")) {
+    _KeyStrokeHandlerXJS = xjsObj;   
+    if (_KeyStrokeHandlerXJS && _KeyStrokeHandlerXJS.hasOwnProperty("Dll")) {
       KeyStrokeHandler.initializeHook();
     } else {
       return new Error("Invalid xjs object parameter");
@@ -15,7 +16,7 @@ export default class KeyStrokeHandler {
   }
 
   static initializeHook() {
-    let dll = KeyStrokeHandler._xjs.Dll;
+    let dll = _KeyStrokeHandlerXJS.Dll;
     dll.load(["Scriptdlls\\SplitMediaLabs\\XjsEx.dll"]);
     dll.on("access-granted", () => {
       window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(dll);
@@ -97,18 +98,18 @@ export default class KeyStrokeHandler {
     _keyPress = _keyPress + _sep + _wParam[wparam];
 
     if (_keyPress && _keyPress !== "")
-      KeyStrokeHandler._eventEmitter.emit(_keyPress, _keyPress);
+      _KeyStrokeHandlerEventEmitter.emit(_keyPress, _keyPress);
   }
 
   static on(event, handler) {
     if (event && event !== "" && event !== "None") {
-      KeyStrokeHandler._eventEmitter.on(event, handler);
+      _KeyStrokeHandlerEventEmitter.on(event, handler);
     }
   }
 
   static off(event, handler) {
     if (event && event !== "" && event !== "None") {
-      KeyStrokeHandler._eventEmitter.off(event, handler);
+      _KeyStrokeHandlerEventEmitter.off(event, handler);
     }
   }
 }

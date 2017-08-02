@@ -284,6 +284,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var _KeyStrokeHandlerEventEmitter = new _evemit2.default();
+var _KeyStrokeHandlerXJS = {};
+
 var KeyStrokeHandler = function () {
   function KeyStrokeHandler() {
     _classCallCheck(this, KeyStrokeHandler);
@@ -292,8 +295,8 @@ var KeyStrokeHandler = function () {
   _createClass(KeyStrokeHandler, null, [{
     key: "initialize",
     value: function initialize(xjsObj) {
-      KeyStrokeHandler._xjs = xjsObj;
-      if (KeyStrokeHandler._xjs && KeyStrokeHandler._xjs.hasOwnProperty("Dll")) {
+      _KeyStrokeHandlerXJS = xjsObj;
+      if (_KeyStrokeHandlerXJS && _KeyStrokeHandlerXJS.hasOwnProperty("Dll")) {
         KeyStrokeHandler.initializeHook();
       } else {
         return new Error("Invalid xjs object parameter");
@@ -302,7 +305,7 @@ var KeyStrokeHandler = function () {
   }, {
     key: "initializeHook",
     value: function initializeHook() {
-      var dll = KeyStrokeHandler._xjs.Dll;
+      var dll = _KeyStrokeHandlerXJS.Dll;
       dll.load(["Scriptdlls\\SplitMediaLabs\\XjsEx.dll"]);
       dll.on("access-granted", function () {
         window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(dll);
@@ -384,20 +387,20 @@ var KeyStrokeHandler = function () {
       var _wParam = _KeyStrokeLib.KeyStrokeLib.wParamMap();
       _keyPress = _keyPress + _sep + _wParam[wparam];
 
-      if (_keyPress && _keyPress !== "") KeyStrokeHandler._eventEmitter.emit(_keyPress, _keyPress);
+      if (_keyPress && _keyPress !== "") _KeyStrokeHandlerEventEmitter.emit(_keyPress, _keyPress);
     }
   }, {
     key: "on",
     value: function on(event, handler) {
       if (event && event !== "" && event !== "None") {
-        KeyStrokeHandler._eventEmitter.on(event, handler);
+        _KeyStrokeHandlerEventEmitter.on(event, handler);
       }
     }
   }, {
     key: "off",
     value: function off(event, handler) {
       if (event && event !== "" && event !== "None") {
-        KeyStrokeHandler._eventEmitter.off(event, handler);
+        _KeyStrokeHandlerEventEmitter.off(event, handler);
       }
     }
   }]);
@@ -405,8 +408,6 @@ var KeyStrokeHandler = function () {
   return KeyStrokeHandler;
 }();
 
-KeyStrokeHandler._eventEmitter = new _evemit2.default();
-KeyStrokeHandler._xjs = {};
 exports.default = KeyStrokeHandler;
 
 /***/ }),
