@@ -613,7 +613,7 @@ var SPECIALKEYS = {
   123: "F12"
 };
 
-var _combinedKeyPressed = {
+var _combinationKeys = {
   160: {
     active: false,
     value: "Shift"
@@ -648,7 +648,7 @@ var KeyStrokeLib = exports.KeyStrokeLib = function () {
   _createClass(KeyStrokeLib, null, [{
     key: "combinedKeyPressed",
     value: function combinedKeyPressed() {
-      return _combinedKeyPressed;
+      return _combinationKeys;
     }
   }, {
     key: "wParamMap",
