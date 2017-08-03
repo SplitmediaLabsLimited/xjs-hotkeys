@@ -359,15 +359,15 @@ var KeyStrokeHandler = function () {
   }, {
     key: "handleKeydown",
     value: function handleKeydown(wparam, lparam) {
-      if (_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed().hasOwnProperty(wparam)) {
-        _KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()[wparam].active = true;
+      if (_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
+        _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()[wparam].active = true;
       }
     }
   }, {
     key: "handleKeyup",
     value: function handleKeyup(wparam, lparam) {
-      if (_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed().hasOwnProperty(wparam)) {
-        _KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()[wparam].active = false;
+      if (_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
+        _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()[wparam].active = false;
       } else if (_KeyStrokeLib.KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
         KeyStrokeHandler.processKeyEvent(wparam, lparam);
       }
@@ -377,10 +377,10 @@ var KeyStrokeHandler = function () {
     value: function processKeyEvent(wparam, lparam) {
       var _combinedKeysMap = new Map();
       var _keyPress = "";
-      for (var key in _KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()) {
-        if (_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed().hasOwnProperty(key)) {
-          if (_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()[key].active) {
-            _combinedKeysMap.set(_KeyStrokeLib.KeyStrokeLib._combinedKeyPressed()[key].value, key);
+      for (var key in _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()) {
+        if (_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed().hasOwnProperty(key)) {
+          if (_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()[key].active) {
+            _combinedKeysMap.set(_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()[key].value, key);
           }
         }
       }
@@ -613,7 +613,7 @@ var SPECIALKEYS = {
   123: "F12"
 };
 
-var _combinedKeyPressed2 = {
+var _combinedKeyPressed = {
   160: {
     active: false,
     value: "Shift"
@@ -646,9 +646,9 @@ var KeyStrokeLib = exports.KeyStrokeLib = function () {
   }
 
   _createClass(KeyStrokeLib, null, [{
-    key: "_combinedKeyPressed",
-    value: function _combinedKeyPressed() {
-      return _combinedKeyPressed2;
+    key: "combinedKeyPressed",
+    value: function combinedKeyPressed() {
+      return _combinedKeyPressed;
     }
   }, {
     key: "wParamMap",

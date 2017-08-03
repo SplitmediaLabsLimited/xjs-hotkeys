@@ -71,14 +71,14 @@ export default class KeyStrokeHandler {
   }
 
   static handleKeydown(wparam, lparam) {
-    if (KeyStrokeLib._combinedKeyPressed().hasOwnProperty(wparam)) {
-      KeyStrokeLib._combinedKeyPressed()[wparam].active = true;
+    if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
+      KeyStrokeLib.combinedKeyPressed()[wparam].active = true;
     }
   }
 
   static handleKeyup(wparam, lparam) {
-    if (KeyStrokeLib._combinedKeyPressed().hasOwnProperty(wparam)) {
-      KeyStrokeLib._combinedKeyPressed()[wparam].active = false;
+    if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
+      KeyStrokeLib.combinedKeyPressed()[wparam].active = false;
     } else if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
       KeyStrokeHandler.processKeyEvent(wparam, lparam);
     }
@@ -87,11 +87,11 @@ export default class KeyStrokeHandler {
   static processKeyEvent(wparam, lparam) {
     let _combinedKeysMap = new Map();
     let _keyPress = "";
-    for (let key in KeyStrokeLib._combinedKeyPressed()) {
-      if (KeyStrokeLib._combinedKeyPressed().hasOwnProperty(key)) {
-        if (KeyStrokeLib._combinedKeyPressed()[key].active) {
+    for (let key in KeyStrokeLib.combinedKeyPressed()) {
+      if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(key)) {
+        if (KeyStrokeLib.combinedKeyPressed()[key].active) {
           _combinedKeysMap.set(
-            KeyStrokeLib._combinedKeyPressed()[key].value,
+            KeyStrokeLib.combinedKeyPressed()[key].value,
             key
           );
         }

@@ -974,7 +974,7 @@ var SPECIALKEYS = {
   123: "F12"
 };
 
-var _combinedKeyPressed2 = {
+var _combinedKeyPressed = {
   160: {
     active: false,
     value: "Shift"
@@ -1007,9 +1007,9 @@ var KeyStrokeLib = exports.KeyStrokeLib = function () {
   }
 
   _createClass(KeyStrokeLib, null, [{
-    key: "_combinedKeyPressed",
-    value: function _combinedKeyPressed() {
-      return _combinedKeyPressed2;
+    key: "combinedKeyPressed",
+    value: function combinedKeyPressed() {
+      return _combinedKeyPressed;
     }
   }, {
     key: "wParamMap",
@@ -2439,7 +2439,7 @@ var XUIKeyStrokes = function (_Component) {
       }
 
       var _wpParamMap = _KeyStrokeLib.KeyStrokeLib.wParamMap();
-      var _combinedKeys = _KeyStrokeLib.KeyStrokeLib._combinedKeyPressed;
+      var _combinedKeys = _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed();
 
       if (_wpParamMap[event.which] && !_combinedKeys[event.which]) {
         pressed = pressed + sep + _wpParamMap[event.which];

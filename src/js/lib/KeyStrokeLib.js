@@ -205,7 +205,7 @@ let _combinedKeyPressed = {
 };
 
 export class KeyStrokeLib {
-  static _combinedKeyPressed() {
+  static combinedKeyPressed() {
     return _combinedKeyPressed;
   }
 

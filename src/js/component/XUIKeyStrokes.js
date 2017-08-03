@@ -50,7 +50,7 @@ class XUIKeyStrokes extends Component {
     }
 
     let _wpParamMap = KeyStrokeLib.wParamMap();
-    let _combinedKeys = KeyStrokeLib._combinedKeyPressed;
+    let _combinedKeys = KeyStrokeLib.combinedKeyPressed();
 
     if (_wpParamMap[event.which] && !_combinedKeys[event.which]) {
       pressed = pressed + sep + _wpParamMap[event.which];
