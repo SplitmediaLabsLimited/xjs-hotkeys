@@ -1,22 +1,22 @@
 import Evemit from "evemit";
 import { KeyStrokeLib } from "./KeyStrokeLib.js";
 
-let _KeyStrokeHandlerEventEmitter = new Evemit();
-let _KeyStrokeHandlerXJS = {};
+let _keyEventEmitter = new Evemit();
+let _xjsObj = {};
 
 export default class KeyStrokeHandler {
-
+  
   static assignXjs(xjsObj) {
-    _KeyStrokeHandlerXJS = xjsObj;
-    if (!_KeyStrokeHandlerXJS && !_KeyStrokeHandlerXJS.hasOwnProperty("Dll")) {
+    _xjsObj = xjsObj;
+    if (!_xjsObj && !_xjsObj.hasOwnProperty("Dll")) {
       return new Error("Invalid xjs object parameter");
     }
   }
 
   static initWithXjsDllHook(xjsObj) {
-    _KeyStrokeHandlerXJS = xjsObj;
-    if (_KeyStrokeHandlerXJS && _KeyStrokeHandlerXJS.hasOwnProperty("Dll")) {
-      let dll = _KeyStrokeHandlerXJS.Dll;
+    _xjsObj = xjsObj;
+    if (_xjsObj && _xjsObj.hasOwnProperty("Dll")) {
+      let dll = _xjsObj.Dll;
       dll.load(["Scriptdlls\\SplitMediaLabs\\XjsEx.dll"]);
       dll.on("access-granted", () => {
         KeyStrokeHandler.assignHookOnAccessGranted();
@@ -38,9 +38,9 @@ export default class KeyStrokeHandler {
 
   static assignHookOnAccessGranted() {
     window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(
-      _KeyStrokeHandlerXJS.Dll
+      _xjsObj.Dll
     );
-    _KeyStrokeHandlerXJS.Dll
+    _xjsObj.Dll
       .callEx("xsplit.HookSubscribe")
       .then(() => {})
       .catch(err => {
@@ -109,18 +109,18 @@ export default class KeyStrokeHandler {
     _keyPress = _keyPress + _sep + _wParam[wparam];
 
     if (_keyPress && _keyPress !== "")
-      _KeyStrokeHandlerEventEmitter.emit(_keyPress, _keyPress);
+      _keyEventEmitter.emit(_keyPress, _keyPress);
   }
 
   static on(event, handler) {
     if (event && event !== "" && event !== "None") {
-      _KeyStrokeHandlerEventEmitter.on(event, handler);
+      _keyEventEmitter.on(event, handler);
     }
   }
 
   static off(event, handler) {
     if (event && event !== "" && event !== "None") {
-      _KeyStrokeHandlerEventEmitter.off(event, handler);
+      _keyEventEmitter.off(event, handler);
     }
   }
 }

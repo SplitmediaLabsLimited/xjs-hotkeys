@@ -1,4 +1,6 @@
-var webpack = require('webpack');
+'use strict';
+
+const eslintFormatter = require('react-dev-utils/eslintFormatter');
 
 module.exports = {
   entry:  {
@@ -8,24 +10,48 @@ module.exports = {
   output: { 
     path: __dirname + '/dist',
     filename: 'js/[name].js' },
-  module: {
-    loaders: [
+  resolve: {
+    extensions: ['.js', '.jsx', '.json']
+  },
+  module: {    
+    rules: [
+       {
+        test: /\.jsx?$/,
+        enforce: 'pre',
+        use: [
+          {
+            options: {
+              formatter: eslintFormatter,
+              
+            },
+            loader: 'eslint-loader',
+          },
+        ]
+      },
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /(node_modules)/,
-        query: {
-          presets: ['es2015','stage-0','react']
-        }
+        exclude: /node_modules/,        
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: false,
+              presets: [
+                ['es2015', { modules: false }],
+                'react',
+              ],
+            }
+          }
+        ]
       },
       {
         test: /\.css$/,
-        loader: 'css-loader'
+        loader: 'css-loader',
       },
       {
         test: /\.(jpg|png)$/,
         loader: 'url-loader'
       }
     ]
-  },
+  }
 };

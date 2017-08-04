@@ -782,15 +782,10 @@ module.exports = reactProdInvariant;
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return KeyStrokeLib; });
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1001,7 +996,7 @@ var _combinationKeys = {
   }
 };
 
-var KeyStrokeLib = exports.KeyStrokeLib = function () {
+var KeyStrokeLib = function () {
   function KeyStrokeLib() {
     _classCallCheck(this, KeyStrokeLib);
   }
@@ -2332,7 +2327,7 @@ module.exports = getIteratorFn;
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(25)();
+exports = module.exports = __webpack_require__(25)(undefined);
 // imports
 
 
@@ -2355,32 +2350,26 @@ module.exports = __webpack_require__(31);
 
 /***/ }),
 /* 22 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_css_XUIKeyStrokes_css__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_css_XUIKeyStrokes_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__src_css_XUIKeyStrokes_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__ = __webpack_require__(5);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(21);
-
-var _react2 = _interopRequireDefault(_react);
-
-__webpack_require__(19);
-
-var _KeyStrokeLib = __webpack_require__(5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
 
 var _NO_HOTKEY_VALUE = "None";
 
@@ -2438,8 +2427,8 @@ var XUIKeyStrokes = function (_Component) {
         sep = "+";
       }
 
-      var _wpParamMap = _KeyStrokeLib.KeyStrokeLib.wParamMap();
-      var _combinedKeys = _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed();
+      var _wpParamMap = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap();
+      var _combinedKeys = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed();
 
       if (_wpParamMap[event.which] && !_combinedKeys[event.which]) {
         pressed = pressed + sep + _wpParamMap[event.which];
@@ -2474,17 +2463,17 @@ var XUIKeyStrokes = function (_Component) {
       } else if (typeof this.props.value !== "undefined") {
         defaultValue = this.props.value;
       }
-      return _react2.default.createElement(
+      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         "div",
         { className: "xui-keyStroke" },
-        _react2.default.createElement("input", {
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
           type: "text",
           ref: this.getInputKeyStoke,
           defaultValue: defaultValue,
           "data-key": this.props.inputName,
           onKeyDown: this.onKeyDown
         }),
-        _react2.default.createElement("button", { name: "delete", onClick: this.onDeleteClick })
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("button", { name: "delete", onClick: this.onDeleteClick })
       );
     }
   }, {
@@ -2514,9 +2503,9 @@ var XUIKeyStrokes = function (_Component) {
   }]);
 
   return XUIKeyStrokes;
-}(_react.Component);
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-exports.default = XUIKeyStrokes;
+/* harmony default export */ __webpack_exports__["default"] = (XUIKeyStrokes);
 
 /***/ }),
 /* 23 */,
@@ -3408,21 +3397,19 @@ module.exports = factory;
 	Author Tobias Koppers @sokra
 */
 // css base code, injected by the css-loader
-module.exports = function() {
+module.exports = function(useSourceMap) {
 	var list = [];
 
 	// return the list of modules as css string
 	list.toString = function toString() {
-		var result = [];
-		for(var i = 0; i < this.length; i++) {
-			var item = this[i];
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
 			if(item[2]) {
-				result.push("@media " + item[2] + "{" + item[1] + "}");
+				return "@media " + item[2] + "{" + content + "}";
 			} else {
-				result.push(item[1]);
+				return content;
 			}
-		}
-		return result.join("");
+		}).join("");
 	};
 
 	// import a list of modules into the list
@@ -3453,6 +3440,34 @@ module.exports = function() {
 	};
 	return list;
 };
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
 
 
 /***/ }),
