@@ -361,7 +361,8 @@ var KeyStrokeHandler = function () {
     value: function handleKeyup(wparam, lparam) {
       if (__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed().hasOwnProperty(wparam)) {
         __WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed()[wparam].active = false;
-      } else if (__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap().hasOwnProperty(wparam)) {
+      }
+      if (__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap().hasOwnProperty(wparam)) {
         KeyStrokeHandler.processKeyEvent(wparam, lparam);
       }
     }
@@ -388,7 +389,9 @@ var KeyStrokeHandler = function () {
       var _wParam = __WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap();
       _keyPress = _keyPress + _sep + _wParam[wparam];
 
-      if (_keyPress && _keyPress !== "") _keyEventEmitter.emit(_keyPress, _keyPress);
+      if (_keyPress && _keyPress !== "") {
+        _keyEventEmitter.emit(_keyPress, _keyPress);
+      }
     }
   }, {
     key: "on",
@@ -428,6 +431,9 @@ var W_PARAM_MAP = {
   9: "Tab",
   12: "Num5", // VK_CLEAR. Sent when Num5 is pressed with NumLock off.
   13: "Enter",
+  16: "Shift",
+  17: "Ctrl",
+  18: "Alt",
   19: "Pause",
   20: "CapsLock",
   27: "Esc",
@@ -511,12 +517,12 @@ var W_PARAM_MAP = {
   123: "F12",
   144: "NumLock",
   145: "ScrollLock",
-  160: "LShift",
-  161: "RShift",
-  162: "LCtrl",
-  163: "RCtrl",
-  164: "LAlt",
-  165: "RAlt",
+  160: "Shift",
+  161: "Shift",
+  162: "Ctrl",
+  163: "Ctrl",
+  164: "Alt",
+  165: "Alt",
   186: ";",
   187: "=",
   188: ",",
@@ -623,6 +629,18 @@ var _combinationKeys = {
     value: "Alt"
   },
   165: {
+    active: false,
+    value: "Alt"
+  },
+  16: {
+    active: false,
+    value: "Shift"
+  },
+  17: {
+    active: false,
+    value: "Ctrl"
+  },
+  18: {
     active: false,
     value: "Alt"
   }

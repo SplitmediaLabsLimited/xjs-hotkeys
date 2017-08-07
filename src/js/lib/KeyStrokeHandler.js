@@ -5,7 +5,6 @@ let _keyEventEmitter = new Evemit();
 let _xjsObj = {};
 
 export default class KeyStrokeHandler {
-  
   static assignXjs(xjsObj) {
     _xjsObj = xjsObj;
     if (!_xjsObj && !_xjsObj.hasOwnProperty("Dll")) {
@@ -40,12 +39,9 @@ export default class KeyStrokeHandler {
     window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(
       _xjsObj.Dll
     );
-    _xjsObj.Dll
-      .callEx("xsplit.HookSubscribe")
-      .then(() => {})
-      .catch(err => {
-        console.error(err.message);
-      });
+    _xjsObj.Dll.callEx("xsplit.HookSubscribe").then(() => {}).catch(err => {
+      console.error(err.message);
+    });
   }
 
   static removeHookOnRevoke() {
@@ -79,7 +75,8 @@ export default class KeyStrokeHandler {
   static handleKeyup(wparam, lparam) {
     if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = false;
-    } else if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
+    }
+    if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
       KeyStrokeHandler.processKeyEvent(wparam, lparam);
     }
   }
@@ -108,8 +105,9 @@ export default class KeyStrokeHandler {
     let _wParam = KeyStrokeLib.wParamMap();
     _keyPress = _keyPress + _sep + _wParam[wparam];
 
-    if (_keyPress && _keyPress !== "")
+    if (_keyPress && _keyPress !== "") {
       _keyEventEmitter.emit(_keyPress, _keyPress);
+    }
   }
 
   static on(event, handler) {

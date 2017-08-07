@@ -796,6 +796,9 @@ var W_PARAM_MAP = {
   9: "Tab",
   12: "Num5", // VK_CLEAR. Sent when Num5 is pressed with NumLock off.
   13: "Enter",
+  16: "Shift",
+  17: "Ctrl",
+  18: "Alt",
   19: "Pause",
   20: "CapsLock",
   27: "Esc",
@@ -879,12 +882,12 @@ var W_PARAM_MAP = {
   123: "F12",
   144: "NumLock",
   145: "ScrollLock",
-  160: "LShift",
-  161: "RShift",
-  162: "LCtrl",
-  163: "RCtrl",
-  164: "LAlt",
-  165: "RAlt",
+  160: "Shift",
+  161: "Shift",
+  162: "Ctrl",
+  163: "Ctrl",
+  164: "Alt",
+  165: "Alt",
   186: ";",
   187: "=",
   188: ",",
@@ -991,6 +994,18 @@ var _combinationKeys = {
     value: "Alt"
   },
   165: {
+    active: false,
+    value: "Alt"
+  },
+  16: {
+    active: false,
+    value: "Shift"
+  },
+  17: {
+    active: false,
+    value: "Ctrl"
+  },
+  18: {
     active: false,
     value: "Alt"
   }
@@ -2383,6 +2398,7 @@ var XUIKeyStrokes = function (_Component) {
 
     _this.onValueChange = _this.onValueChange.bind(_this);
     _this.onKeyDown = _this.onKeyDown.bind(_this);
+    _this.onKeyUp = _this.onKeyUp.bind(_this);
     _this.onDeleteClick = _this.onDeleteClick.bind(_this);
     _this.getInputKeyStoke = _this.getInputKeyStoke.bind(_this);
     _this.getValueOnSave = _this.getValueOnSave.bind(_this);
@@ -2408,33 +2424,56 @@ var XUIKeyStrokes = function (_Component) {
     key: "onKeyDown",
     value: function onKeyDown(event) {
       event.preventDefault();
-
       var pressed = "";
-      var sep = "";
-
-      if (event.altKey) {
-        pressed = pressed + sep + "Alt";
-        sep = "+";
-      }
-
-      if (event.ctrlKey) {
-        pressed = pressed + sep + "Ctrl";
-        sep = "+";
-      }
-
-      if (event.shiftKey) {
-        pressed = pressed + sep + "Shift";
-        sep = "+";
-      }
-
       var _wpParamMap = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap();
-      var _combinedKeys = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed();
 
-      if (_wpParamMap[event.which] && !_combinedKeys[event.which]) {
-        pressed = pressed + sep + _wpParamMap[event.which];
+      var _keyPressed = this.determinePressedKey(event);
+
+      if (_wpParamMap[event.which]) {
+        pressed = _keyPressed.pressed + _keyPressed.sep + _wpParamMap[event.which];
         event.target.value = pressed;
         this.onValueChange(pressed, event.target.dataset.key);
       }
+    }
+  }, {
+    key: "onKeyUp",
+    value: function onKeyUp(event) {
+      event.preventDefault();
+      var pressed = "";
+      var _wpParamMap = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap();
+
+      var _keyPressed = this.determinePressedKey(event);
+
+      if (_wpParamMap[event.which] && _wpParamMap[44] === _wpParamMap[event.which]) {
+        pressed = _keyPressed.pressed + _keyPressed.sep + _wpParamMap[event.which];
+        event.target.value = pressed;
+        this.onValueChange(pressed, event.target.dataset.key);
+      }
+    }
+  }, {
+    key: "determinePressedKey",
+    value: function determinePressedKey(event) {
+      var pressed = "";
+      var sep = "";
+
+      var _combinedKeys = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed();
+
+      if (!_combinedKeys[event.which]) {
+        if (event.altKey) {
+          pressed = pressed + sep + "Alt";
+          sep = "+";
+        }
+        if (event.ctrlKey) {
+          pressed = pressed + sep + "Ctrl";
+          sep = "+";
+        }
+        if (event.shiftKey) {
+          pressed = pressed + sep + "Shift";
+          sep = "+";
+        }
+      }
+
+      return { pressed: pressed, sep: sep };
     }
   }, {
     key: "onDeleteClick",
@@ -2471,7 +2510,8 @@ var XUIKeyStrokes = function (_Component) {
           ref: this.getInputKeyStoke,
           defaultValue: defaultValue,
           "data-key": this.props.inputName,
-          onKeyDown: this.onKeyDown
+          onKeyDown: this.onKeyDown,
+          onKeyUp: this.onKeyUp
         }),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("button", { name: "delete", onClick: this.onDeleteClick })
       );

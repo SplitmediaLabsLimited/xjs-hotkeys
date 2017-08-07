@@ -34,7 +34,7 @@ document.oncontextmenu = function() {
 };
 
 xjs.ready().then(() => {
-  KeyStrokeHandler.initWithXjsDllHook(xjs);  
+  KeyStrokeHandler.initWithXjsDllHook(xjs);
 
   let hotKey = obj => {
     console.log("HotKey: emitted event " + obj);

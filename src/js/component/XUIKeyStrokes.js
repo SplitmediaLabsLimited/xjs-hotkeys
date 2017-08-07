@@ -9,6 +9,7 @@ class XUIKeyStrokes extends Component {
     super();
     this.onValueChange = this.onValueChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.getInputKeyStoke = this.getInputKeyStoke.bind(this);
     this.getValueOnSave = this.getValueOnSave.bind(this);
@@ -30,33 +31,59 @@ class XUIKeyStrokes extends Component {
 
   onKeyDown(event) {
     event.preventDefault();
-
     let pressed = "";
-    let sep = "";
-
-    if (event.altKey) {
-      pressed = pressed + sep + "Alt";
-      sep = "+";
-    }
-
-    if (event.ctrlKey) {
-      pressed = pressed + sep + "Ctrl";
-      sep = "+";
-    }
-
-    if (event.shiftKey) {
-      pressed = pressed + sep + "Shift";
-      sep = "+";
-    }
-
     let _wpParamMap = KeyStrokeLib.wParamMap();
-    let _combinedKeys = KeyStrokeLib.combinedKeyPressed();
 
-    if (_wpParamMap[event.which] && !_combinedKeys[event.which]) {
-      pressed = pressed + sep + _wpParamMap[event.which];
+    let _keyPressed = this.determinePressedKey(event);
+
+    if (_wpParamMap[event.which]) {
+      pressed =
+        _keyPressed.pressed + _keyPressed.sep + _wpParamMap[event.which];
       event.target.value = pressed;
       this.onValueChange(pressed, event.target.dataset.key);
     }
+  }
+
+  onKeyUp(event) {
+    event.preventDefault();
+    let pressed = "";
+    let _wpParamMap = KeyStrokeLib.wParamMap();
+
+    let _keyPressed = this.determinePressedKey(event);
+
+    if (
+      _wpParamMap[event.which] &&
+      _wpParamMap[44] === _wpParamMap[event.which]
+    ) {
+      pressed =
+        _keyPressed.pressed + _keyPressed.sep + _wpParamMap[event.which];
+      event.target.value = pressed;
+      this.onValueChange(pressed, event.target.dataset.key);
+    }
+  }
+
+  determinePressedKey(event) {
+    let pressed = "";
+    let sep = "";
+
+    let _combinedKeys = KeyStrokeLib.combinedKeyPressed();
+
+    if (!_combinedKeys[event.which]) {
+      if (event.altKey) {
+        pressed = pressed + sep + "Alt";
+        sep = "+";
+      }
+      if (event.ctrlKey) {
+        pressed = pressed + sep + "Ctrl";
+        sep = "+";
+      }
+      if (event.shiftKey) {
+        pressed = pressed + sep + "Shift";
+        sep = "+";
+      }
+    }
+
+    return { pressed: pressed, sep: sep };
   }
 
   onDeleteClick(event) {
@@ -92,6 +119,7 @@ class XUIKeyStrokes extends Component {
           defaultValue={defaultValue}
           data-key={this.props.inputName}
           onKeyDown={this.onKeyDown}
+          onKeyUp={this.onKeyUp}
         />
         <button name="delete" onClick={this.onDeleteClick} />
       </div>
