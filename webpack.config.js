@@ -21,8 +21,7 @@ module.exports = {
         use: [
           {
             options: {
-              formatter: eslintFormatter,
-              
+              formatter: eslintFormatter              
             },
             loader: 'eslint-loader',
           },
