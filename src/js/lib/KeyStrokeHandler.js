@@ -50,6 +50,7 @@ export default class KeyStrokeHandler {
 
   static readHookEvent(msg, wparam, lparam) {
     let _hookMessageType = KeyStrokeLib.hookMessageType();
+    let _mouseMap = KeyStrokeLib.mouseMap();
 
     //identify message type
     switch (parseInt(msg, 10)) {
@@ -61,8 +62,36 @@ export default class KeyStrokeHandler {
       case _hookMessageType.WM_SYSKEYUP:
         KeyStrokeHandler.handleKeyup(wparam, lparam);
         break;
+      case _hookMessageType.WM_LBUTTONUP:
+        KeyStrokeHandler.handleMouseUp(_mouseMap[0]);
+        break;
+      case _hookMessageType.WM_RBUTTONUP:
+        KeyStrokeHandler.handleMouseUp(_mouseMap[2]);
+        break;
+      case _hookMessageType.WM_MBUTTONUP:
+        KeyStrokeHandler.handleMouseUp(_mouseMap[1]);
+        break;
+      case _hookMessageType.WM_MOUSEWHEEL:
+        KeyStrokeHandler.handleMouseScroll(_mouseMap[3]);
+        break;
       default:
         break;
+    }
+  }
+
+  static handleMouseScroll(mouseEvent) {
+    KeyStrokeHandler.processMouseEvent(mouseEvent);
+  }
+
+  static handleMouseUp(mouseEvent) {
+    KeyStrokeHandler.processMouseEvent(mouseEvent);
+  }
+
+  static processMouseEvent(mouseEvent) {
+    let _eventValue = KeyStrokeHandler.detectCombinedKeys();
+    _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
+    if (_eventValue.event && _eventValue.event !== "") {
+      _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
     }
   }
 
@@ -81,9 +110,9 @@ export default class KeyStrokeHandler {
     }
   }
 
-  static processKeyEvent(wparam, lparam) {
+  static detectCombinedKeys() {
     let _combinedKeysMap = new Map();
-    let _keyPress = "";
+    let _activeEvent = "";
     for (let key in KeyStrokeLib.combinedKeyPressed()) {
       if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(key)) {
         if (KeyStrokeLib.combinedKeyPressed()[key].active) {
@@ -94,19 +123,21 @@ export default class KeyStrokeHandler {
         }
       }
     }
-
     let _newSortedMap = new Map([..._combinedKeysMap.entries()].sort());
     let _sep = "";
     _newSortedMap.forEach((value, key, map) => {
-      _keyPress = _keyPress + _sep + key;
+      _activeEvent = _activeEvent + _sep + key;
       _sep = "+";
     });
+    return { event: _activeEvent, sep: _sep };
+  }
 
+  static processKeyEvent(wparam, lparam) {
+    let _eventValue = KeyStrokeHandler.detectCombinedKeys();
     let _wParam = KeyStrokeLib.wParamMap();
-    _keyPress = _keyPress + _sep + _wParam[wparam];
-
-    if (_keyPress && _keyPress !== "") {
-      _keyEventEmitter.emit(_keyPress, _keyPress);
+    _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
+    if (_eventValue.event && _eventValue.event !== "") {
+      _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
     }
   }
 
