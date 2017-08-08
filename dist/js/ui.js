@@ -782,10 +782,15 @@ module.exports = reactProdInvariant;
 
 /***/ }),
 /* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return KeyStrokeLib; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -901,12 +906,32 @@ var W_PARAM_MAP = {
   222: "Quote"
 };
 
+//javascript mouse key values
+var MOUSE_MAP = {
+  0: "MOUSE LEFT",
+  left: "MOUSE LEFT",
+  1: "MOUSE MIDDLE",
+  middle: "MOUSE MIDDLE",
+  2: "MOUSE RIGHT",
+  right: "MOUSE RIGHT",
+  wheel: "MOUSE WHEEL"
+};
+
 // hook message constants
 var HOOK_MESSAGE_TYPE = {
   WM_KEYDOWN: 0x0100,
   WM_KEYUP: 0x0101,
   WM_SYSKEYDOWN: 0x0104,
-  WM_SYSKEYUP: 0x0105
+  WM_SYSKEYUP: 0x0105,
+  WM_LBUTTONDOWN: 0x0201,
+  WM_LBUTTONUP: 0x0202,
+  WM_MOUSEMOVE: 0x0200,
+  WM_MOUSEWHEEL: 0x020a,
+  WM_MOUSEHWHEEL: 0x020e,
+  WM_RBUTTONDOWN: 0x0204,
+  WM_RBUTTONUP: 0x0205,
+  WM_MBUTTONDOWN: 0x0207,
+  WM_MBUTTONUP: 0x0208
 };
 
 //restricted keys
@@ -1011,7 +1036,7 @@ var _combinationKeys = {
   }
 };
 
-var KeyStrokeLib = function () {
+var KeyStrokeLib = exports.KeyStrokeLib = function () {
   function KeyStrokeLib() {
     _classCallCheck(this, KeyStrokeLib);
   }
@@ -1040,6 +1065,11 @@ var KeyStrokeLib = function () {
     key: "specialKeys",
     value: function specialKeys() {
       return SPECIALKEYS;
+    }
+  }, {
+    key: "mouseMap",
+    value: function mouseMap() {
+      return MOUSE_MAP;
     }
   }]);
 
@@ -2365,26 +2395,32 @@ module.exports = __webpack_require__(31);
 
 /***/ }),
 /* 22 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_css_XUIKeyStrokes_css__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_css_XUIKeyStrokes_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__src_css_XUIKeyStrokes_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__ = __webpack_require__(5);
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(21);
+
+var _react2 = _interopRequireDefault(_react);
+
+__webpack_require__(19);
+
+var _KeyStrokeLib = __webpack_require__(5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
 
 var _NO_HOTKEY_VALUE = "None";
 
@@ -2400,6 +2436,8 @@ var XUIKeyStrokes = function (_Component) {
     _this.onKeyDown = _this.onKeyDown.bind(_this);
     _this.onKeyUp = _this.onKeyUp.bind(_this);
     _this.onDeleteClick = _this.onDeleteClick.bind(_this);
+    _this.onMouseDown = _this.onMouseDown.bind(_this);
+    _this.onWheel = _this.onWheel.bind(_this);
     _this.getInputKeyStoke = _this.getInputKeyStoke.bind(_this);
     _this.getValueOnSave = _this.getValueOnSave.bind(_this);
     _this.inputKeyStroke = null;
@@ -2421,14 +2459,34 @@ var XUIKeyStrokes = function (_Component) {
       });
     }
   }, {
+    key: "onWheel",
+    value: function onWheel(event) {
+      event.preventDefault();
+      var wheelMove = "";
+      var _mouseMap = _KeyStrokeLib.KeyStrokeLib.mouseMap();
+      wheelMove = _mouseMap["wheel"];
+      event.target.value = wheelMove;
+      this.onValueChange(wheelMove, event.target.dataset.key);
+    }
+  }, {
+    key: "onMouseDown",
+    value: function onMouseDown(event) {
+      event.preventDefault();
+      var clicked = "";
+      var _mouseMap = _KeyStrokeLib.KeyStrokeLib.mouseMap();
+      if (_mouseMap[event.button]) {
+        clicked = _mouseMap[event.button];
+        event.target.value = clicked;
+        this.onValueChange(clicked, event.target.dataset.key);
+      }
+    }
+  }, {
     key: "onKeyDown",
     value: function onKeyDown(event) {
       event.preventDefault();
       var pressed = "";
-      var _wpParamMap = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap();
-
+      var _wpParamMap = _KeyStrokeLib.KeyStrokeLib.wParamMap();
       var _keyPressed = this.determinePressedKey(event);
-
       if (_wpParamMap[event.which]) {
         pressed = _keyPressed.pressed + _keyPressed.sep + _wpParamMap[event.which];
         event.target.value = pressed;
@@ -2440,10 +2498,8 @@ var XUIKeyStrokes = function (_Component) {
     value: function onKeyUp(event) {
       event.preventDefault();
       var pressed = "";
-      var _wpParamMap = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap();
-
+      var _wpParamMap = _KeyStrokeLib.KeyStrokeLib.wParamMap();
       var _keyPressed = this.determinePressedKey(event);
-
       if (_wpParamMap[event.which] && _wpParamMap[44] === _wpParamMap[event.which]) {
         pressed = _keyPressed.pressed + _keyPressed.sep + _wpParamMap[event.which];
         event.target.value = pressed;
@@ -2455,9 +2511,7 @@ var XUIKeyStrokes = function (_Component) {
     value: function determinePressedKey(event) {
       var pressed = "";
       var sep = "";
-
-      var _combinedKeys = __WEBPACK_IMPORTED_MODULE_2__lib_KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed();
-
+      var _combinedKeys = _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed();
       if (!_combinedKeys[event.which]) {
         if (event.altKey) {
           pressed = pressed + sep + "Alt";
@@ -2472,7 +2526,6 @@ var XUIKeyStrokes = function (_Component) {
           sep = "+";
         }
       }
-
       return { pressed: pressed, sep: sep };
     }
   }, {
@@ -2502,18 +2555,20 @@ var XUIKeyStrokes = function (_Component) {
       } else if (typeof this.props.value !== "undefined") {
         defaultValue = this.props.value;
       }
-      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      return _react2.default.createElement(
         "div",
         { className: "xui-keyStroke" },
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
+        _react2.default.createElement("input", {
           type: "text",
           ref: this.getInputKeyStoke,
           defaultValue: defaultValue,
           "data-key": this.props.inputName,
           onKeyDown: this.onKeyDown,
-          onKeyUp: this.onKeyUp
+          onMouseDown: this.onMouseDown,
+          onKeyUp: this.onKeyUp,
+          onWheel: this.onWheel
         }),
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("button", { name: "delete", onClick: this.onDeleteClick })
+        _react2.default.createElement("button", { name: "delete", onClick: this.onDeleteClick })
       );
     }
   }, {
@@ -2543,9 +2598,9 @@ var XUIKeyStrokes = function (_Component) {
   }]);
 
   return XUIKeyStrokes;
-}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+}(_react.Component);
 
-/* harmony default export */ __webpack_exports__["default"] = (XUIKeyStrokes);
+exports.default = XUIKeyStrokes;
 
 /***/ }),
 /* 23 */,

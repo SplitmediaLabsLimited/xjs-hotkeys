@@ -261,23 +261,30 @@
 /***/ }),
 
 /***/ 23:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_evemit__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_evemit___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_evemit__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__ = __webpack_require__(5);
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _evemit = __webpack_require__(20);
+
+var _evemit2 = _interopRequireDefault(_evemit);
+
+var _KeyStrokeLib = __webpack_require__(5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-
-
-
-var _keyEventEmitter = new __WEBPACK_IMPORTED_MODULE_0_evemit___default.a();
+var _keyEventEmitter = new _evemit2.default();
 var _xjsObj = {};
 
 var KeyStrokeHandler = function () {
@@ -333,7 +340,8 @@ var KeyStrokeHandler = function () {
   }, {
     key: "readHookEvent",
     value: function readHookEvent(msg, wparam, lparam) {
-      var _hookMessageType = __WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].hookMessageType();
+      var _hookMessageType = _KeyStrokeLib.KeyStrokeLib.hookMessageType();
+      var _mouseMap = _KeyStrokeLib.KeyStrokeLib.mouseMap();
 
       //identify message type
       switch (parseInt(msg, 10)) {
@@ -345,52 +353,87 @@ var KeyStrokeHandler = function () {
         case _hookMessageType.WM_SYSKEYUP:
           KeyStrokeHandler.handleKeyup(wparam, lparam);
           break;
+        case _hookMessageType.WM_LBUTTONUP:
+          KeyStrokeHandler.handleMouseUp(_mouseMap["left"]);
+          break;
+        case _hookMessageType.WM_RBUTTONUP:
+          KeyStrokeHandler.handleMouseUp(_mouseMap["right"]);
+          break;
+        case _hookMessageType.WM_MBUTTONUP:
+          KeyStrokeHandler.handleMouseUp(_mouseMap["middle"]);
+          break;
+        case _hookMessageType.WM_MOUSEWHEEL:
+        case _hookMessageType.WM_MOUSEHWHEEL:
+          KeyStrokeHandler.handleMouseScroll(_mouseMap["wheel"]);
+          break;
         default:
           break;
       }
     }
   }, {
+    key: "handleMouseScroll",
+    value: function handleMouseScroll(mouseEvent) {
+      KeyStrokeHandler.processMouseEvent(mouseEvent);
+    }
+  }, {
+    key: "handleMouseUp",
+    value: function handleMouseUp(mouseEvent) {
+      KeyStrokeHandler.processMouseEvent(mouseEvent);
+    }
+  }, {
+    key: "processMouseEvent",
+    value: function processMouseEvent(mouseEvent) {
+      var _eventValue = KeyStrokeHandler.detectCombinedKeys();
+      _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
+      if (_eventValue.event && _eventValue.event !== "") {
+        _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
+      }
+    }
+  }, {
     key: "handleKeydown",
     value: function handleKeydown(wparam, lparam) {
-      if (__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed().hasOwnProperty(wparam)) {
-        __WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed()[wparam].active = true;
+      if (_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
+        _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()[wparam].active = true;
       }
     }
   }, {
     key: "handleKeyup",
     value: function handleKeyup(wparam, lparam) {
-      if (__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed().hasOwnProperty(wparam)) {
-        __WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed()[wparam].active = false;
+      if (_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
+        _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()[wparam].active = false;
       }
-      if (__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap().hasOwnProperty(wparam)) {
+      if (_KeyStrokeLib.KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
         KeyStrokeHandler.processKeyEvent(wparam, lparam);
       }
     }
   }, {
-    key: "processKeyEvent",
-    value: function processKeyEvent(wparam, lparam) {
+    key: "detectCombinedKeys",
+    value: function detectCombinedKeys() {
       var _combinedKeysMap = new Map();
-      var _keyPress = "";
-      for (var key in __WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed()) {
-        if (__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed().hasOwnProperty(key)) {
-          if (__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed()[key].active) {
-            _combinedKeysMap.set(__WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].combinedKeyPressed()[key].value, key);
+      var _activeEvent = "";
+      for (var key in _KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()) {
+        if (_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed().hasOwnProperty(key)) {
+          if (_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()[key].active) {
+            _combinedKeysMap.set(_KeyStrokeLib.KeyStrokeLib.combinedKeyPressed()[key].value, key);
           }
         }
       }
-
       var _newSortedMap = new Map([].concat(_toConsumableArray(_combinedKeysMap.entries())).sort());
       var _sep = "";
       _newSortedMap.forEach(function (value, key, map) {
-        _keyPress = _keyPress + _sep + key;
+        _activeEvent = _activeEvent + _sep + key;
         _sep = "+";
       });
-
-      var _wParam = __WEBPACK_IMPORTED_MODULE_1__KeyStrokeLib_js__["a" /* KeyStrokeLib */].wParamMap();
-      _keyPress = _keyPress + _sep + _wParam[wparam];
-
-      if (_keyPress && _keyPress !== "") {
-        _keyEventEmitter.emit(_keyPress, _keyPress);
+      return { event: _activeEvent, sep: _sep };
+    }
+  }, {
+    key: "processKeyEvent",
+    value: function processKeyEvent(wparam, lparam) {
+      var _eventValue = KeyStrokeHandler.detectCombinedKeys();
+      var _wParam = _KeyStrokeLib.KeyStrokeLib.wParamMap();
+      _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
+      if (_eventValue.event && _eventValue.event !== "") {
+        _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
       }
     }
   }, {
@@ -412,15 +455,20 @@ var KeyStrokeHandler = function () {
   return KeyStrokeHandler;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (KeyStrokeHandler);
+exports.default = KeyStrokeHandler;
 
 /***/ }),
 
 /***/ 5:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return KeyStrokeLib; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -536,12 +584,32 @@ var W_PARAM_MAP = {
   222: "Quote"
 };
 
+//javascript mouse key values
+var MOUSE_MAP = {
+  0: "MOUSE LEFT",
+  left: "MOUSE LEFT",
+  1: "MOUSE MIDDLE",
+  middle: "MOUSE MIDDLE",
+  2: "MOUSE RIGHT",
+  right: "MOUSE RIGHT",
+  wheel: "MOUSE WHEEL"
+};
+
 // hook message constants
 var HOOK_MESSAGE_TYPE = {
   WM_KEYDOWN: 0x0100,
   WM_KEYUP: 0x0101,
   WM_SYSKEYDOWN: 0x0104,
-  WM_SYSKEYUP: 0x0105
+  WM_SYSKEYUP: 0x0105,
+  WM_LBUTTONDOWN: 0x0201,
+  WM_LBUTTONUP: 0x0202,
+  WM_MOUSEMOVE: 0x0200,
+  WM_MOUSEWHEEL: 0x020a,
+  WM_MOUSEHWHEEL: 0x020e,
+  WM_RBUTTONDOWN: 0x0204,
+  WM_RBUTTONUP: 0x0205,
+  WM_MBUTTONDOWN: 0x0207,
+  WM_MBUTTONUP: 0x0208
 };
 
 //restricted keys
@@ -646,7 +714,7 @@ var _combinationKeys = {
   }
 };
 
-var KeyStrokeLib = function () {
+var KeyStrokeLib = exports.KeyStrokeLib = function () {
   function KeyStrokeLib() {
     _classCallCheck(this, KeyStrokeLib);
   }
@@ -675,6 +743,11 @@ var KeyStrokeLib = function () {
     key: "specialKeys",
     value: function specialKeys() {
       return SPECIALKEYS;
+    }
+  }, {
+    key: "mouseMap",
+    value: function mouseMap() {
+      return MOUSE_MAP;
     }
   }]);
 

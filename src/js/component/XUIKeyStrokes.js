@@ -12,6 +12,7 @@ class XUIKeyStrokes extends Component {
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.onWheel = this.onWheel.bind(this);
     this.getInputKeyStoke = this.getInputKeyStoke.bind(this);
     this.getValueOnSave = this.getValueOnSave.bind(this);
     this.inputKeyStroke = null;
@@ -30,10 +31,19 @@ class XUIKeyStrokes extends Component {
     });
   }
 
-  onMouseDown(event) {      
-    event.preventDefault();       
+  onWheel(event) {
+    event.preventDefault();
+    let wheelMove = "";
+    let _mouseMap = KeyStrokeLib.mouseMap();
+    wheelMove = _mouseMap["wheel"];
+    event.target.value = wheelMove;
+    this.onValueChange(wheelMove, event.target.dataset.key);
+  }
+
+  onMouseDown(event) {
+    event.preventDefault();
     let clicked = "";
-    let _mouseMap = KeyStrokeLib.mouseMap();    
+    let _mouseMap = KeyStrokeLib.mouseMap();
     if (_mouseMap[event.button]) {
       clicked = _mouseMap[event.button];
       event.target.value = clicked;
@@ -41,8 +51,8 @@ class XUIKeyStrokes extends Component {
     }
   }
 
-  onKeyDown(event) {    
-    event.preventDefault();    
+  onKeyDown(event) {
+    event.preventDefault();
     let pressed = "";
     let _wpParamMap = KeyStrokeLib.wParamMap();
     let _keyPressed = this.determinePressedKey(event);
@@ -54,8 +64,8 @@ class XUIKeyStrokes extends Component {
     }
   }
 
-  onKeyUp(event) {   
-    event.preventDefault();    
+  onKeyUp(event) {
+    event.preventDefault();
     let pressed = "";
     let _wpParamMap = KeyStrokeLib.wParamMap();
     let _keyPressed = this.determinePressedKey(event);
@@ -126,6 +136,7 @@ class XUIKeyStrokes extends Component {
           onKeyDown={this.onKeyDown}
           onMouseDown={this.onMouseDown}
           onKeyUp={this.onKeyUp}
+          onWheel={this.onWheel}
         />
         <button name="delete" onClick={this.onDeleteClick} />
       </div>

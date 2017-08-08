@@ -63,16 +63,17 @@ export default class KeyStrokeHandler {
         KeyStrokeHandler.handleKeyup(wparam, lparam);
         break;
       case _hookMessageType.WM_LBUTTONUP:
-        KeyStrokeHandler.handleMouseUp(_mouseMap[0]);
+        KeyStrokeHandler.handleMouseUp(_mouseMap["left"]);
         break;
       case _hookMessageType.WM_RBUTTONUP:
-        KeyStrokeHandler.handleMouseUp(_mouseMap[2]);
+        KeyStrokeHandler.handleMouseUp(_mouseMap["right"]);
         break;
       case _hookMessageType.WM_MBUTTONUP:
-        KeyStrokeHandler.handleMouseUp(_mouseMap[1]);
+        KeyStrokeHandler.handleMouseUp(_mouseMap["middle"]);
         break;
       case _hookMessageType.WM_MOUSEWHEEL:
-        KeyStrokeHandler.handleMouseScroll(_mouseMap[3]);
+      case _hookMessageType.WM_MOUSEHWHEEL:
+        KeyStrokeHandler.handleMouseScroll(_mouseMap["wheel"]);
         break;
       default:
         break;
