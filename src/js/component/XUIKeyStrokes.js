@@ -16,7 +16,10 @@ class XUIKeyStrokes extends Component {
     this.getInputKeyStoke = this.getInputKeyStoke.bind(this);
     this.getValueOnSave = this.getValueOnSave.bind(this);
     this.inputKeyStroke = null;
-    this.state = { previousValue: _NO_HOTKEY_VALUE };
+    this.state = {
+      previousValue: _NO_HOTKEY_VALUE,
+      prevKeyDownValue: ""
+    };
   }
 
   onValueChange(value, dataKey) {
@@ -34,8 +37,9 @@ class XUIKeyStrokes extends Component {
   onWheel(event) {
     event.preventDefault();
     let wheelMove = "";
+    let _keyPressed = this.determinePressedKey(event);
     let _mouseMap = KeyStrokeLib.mouseMap();
-    wheelMove = _mouseMap["wheel"];
+    wheelMove = _keyPressed.pressed + _keyPressed.sep + _mouseMap["wheel"];
     event.target.value = wheelMove;
     this.onValueChange(wheelMove, event.target.dataset.key);
   }
@@ -43,9 +47,10 @@ class XUIKeyStrokes extends Component {
   onMouseDown(event) {
     event.preventDefault();
     let clicked = "";
+    let _keyPressed = this.determinePressedKey(event);
     let _mouseMap = KeyStrokeLib.mouseMap();
     if (_mouseMap[event.button]) {
-      clicked = _mouseMap[event.button];
+      clicked = _keyPressed.pressed + _keyPressed.sep + _mouseMap[event.button];
       event.target.value = clicked;
       this.onValueChange(clicked, event.target.dataset.key);
     }
@@ -55,6 +60,11 @@ class XUIKeyStrokes extends Component {
     event.preventDefault();
     let pressed = "";
     let _wpParamMap = KeyStrokeLib.wParamMap();
+    if (this.state.prevKeyDownValue === _wpParamMap[event.which]) {
+      return;
+    } else {
+      this.setState({ prevKeyDownValue: _wpParamMap[event.which] });
+    }
     let _keyPressed = this.determinePressedKey(event);
     if (_wpParamMap[event.which]) {
       pressed =
@@ -65,6 +75,7 @@ class XUIKeyStrokes extends Component {
   }
 
   onKeyUp(event) {
+    this.setState({ prevKeyDownValue: "" });
     event.preventDefault();
     let pressed = "";
     let _wpParamMap = KeyStrokeLib.wParamMap();

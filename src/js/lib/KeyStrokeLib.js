@@ -111,13 +111,13 @@ const W_PARAM_MAP = {
 
 //javascript mouse key values
 const MOUSE_MAP = {
-  0: "MOUSE LEFT",
-  left: "MOUSE LEFT",
-  1: "MOUSE MIDDLE",
-  middle: "MOUSE MIDDLE",
-  2: "MOUSE RIGHT",
-  right: "MOUSE RIGHT",
-  wheel: "MOUSE WHEEL"
+  0: "MLeft",
+  left: "MLeft",
+  1: "MCenter",
+  middle: "MCenter",
+  2: "MRight",
+  right: "MRight",
+  wheel: "MWheel"
 };
 
 // hook message constants
