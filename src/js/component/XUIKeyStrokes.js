@@ -16,6 +16,9 @@ class XUIKeyStrokes extends Component {
     this.getInputKeyStoke = this.getInputKeyStoke.bind(this);
     this.getValueOnSave = this.getValueOnSave.bind(this);
     this.inputKeyStroke = null;
+    this.onBlur = this.onBlur.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.oldDllMidiChannelMessage = () => {};   
     this.state = {
       previousValue: _NO_HOTKEY_VALUE,
       prevKeyDownValue: ""
@@ -34,6 +37,35 @@ class XUIKeyStrokes extends Component {
     });
   }
 
+  onBlur(){
+    window.OnDllMidiChannelMessage = this.oldDllMidiChannelMessage;
+    this.oldDllMidiChannelMessage = {};
+  }
+
+  onFocus(){
+    this.oldDllMidiChannelMessage = window.OnDllMidiChannelMessage;
+    window.OnDllMidiChannelMessage = this.readMidiHookEvent.bind(this);
+  }
+
+  readMidiHookEvent(type, channel, data1, data2) {
+    let _midiEvent = "";    
+    if(Number.isNaN(type) || Number.isNaN(channel) || Number.isNaN(data1) || Number.isNaN(data2)){
+      return;
+    }    
+    let _midiMessage = KeyStrokeLib.midiMessageType();
+    if(_midiMessage[type]){
+      _midiEvent = _midiMessage[type] + " " + channel + ":" + data1;
+      //midi key down
+      if(0 !== parseInt(data2, 10)) {
+        this.onValueChange(_midiEvent, this.inputKeyStroke.dataset.key);
+      } 
+      //midi key up
+      if(0 === parseInt(data2, 10)) { 
+        this.oldDllMidiChannelMessage(type, channel, data1, data2);
+      }    
+    }
+  }
+
   onWheel(event) {
     event.preventDefault();
     let wheelMove = "";
@@ -44,8 +76,8 @@ class XUIKeyStrokes extends Component {
     this.onValueChange(wheelMove, event.target.dataset.key);
   }
 
-  onMouseDown(event) {
-    event.preventDefault();
+  onMouseDown(event) {   
+    event.preventDefault();       
     let clicked = "";
     let _keyPressed = this.determinePressedKey(event);
     let _mouseMap = KeyStrokeLib.mouseMap();
@@ -57,7 +89,7 @@ class XUIKeyStrokes extends Component {
   }
 
   onKeyDown(event) {
-    event.preventDefault();
+    event.preventDefault();   
     let pressed = "";
     let _wpParamMap = KeyStrokeLib.wParamMap();
     if (this.state.prevKeyDownValue === _wpParamMap[event.which]) {
@@ -148,6 +180,8 @@ class XUIKeyStrokes extends Component {
           onMouseDown={this.onMouseDown}
           onKeyUp={this.onKeyUp}
           onWheel={this.onWheel}
+          onBlur={this.onBlur}  
+          onFocus={this.onFocus}        
         />
         <button name="delete" onClick={this.onDeleteClick} />
       </div>

@@ -200,6 +200,16 @@ const SPECIALKEYS = {
   123: "F12"
 };
 
+const MIDI_MESSAGETYPE = {
+  8:"NoteOff",
+  9:"NoteOn",
+  10:"PolyphonicAftertouch",
+  11:"ControlChange",
+  12:"ProgramChange",
+  13:"ChannelAftertouch",
+  14:"PitchWheel"
+}
+
 let _combinationKeys = {
   160: {
     active: false,
@@ -262,5 +272,9 @@ export class KeyStrokeLib {
 
   static mouseMap() {
     return MOUSE_MAP;
+  }
+
+  static midiMessageType(){
+    return MIDI_MESSAGETYPE;
   }
 }

@@ -35,17 +35,53 @@ export default class KeyStrokeHandler {
     }
   }
 
-  static assignHookOnAccessGranted() {
-    window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(
-      _xjsObj.Dll
-    );
-    _xjsObj.Dll.callEx("xsplit.HookSubscribe").then(() => {}).catch(err => {
+  static initMidiHook(){
+    _xjsObj.Dll.call("xsplit.Midi.StartMonitor").then(() => {
+    window.OnDllMidiChannelMessage = KeyStrokeHandler.readMidiHookEvent;
+    }).catch(err => {
       console.error(err.message);
+      KeyStrokeHandler.removeMidiHook();
+    });
+  }
+
+  static removeMidiHook(){
+    window.OnDllMidiChannelMessage = () => {};
+  }
+
+  static assignHookOnAccessGranted() {        
+    KeyStrokeHandler.midiSubscribe().then(() => {
+      window.OnDllMidiDeviceNew = KeyStrokeHandler.midiSubscribe;
+      window.OnDllMidiDeviceRemoved = KeyStrokeHandler.removeHookOnRevoke; 
+    });
+  }
+
+  static midiSubscribe(){
+    return new Promise((resolve, reject) => {
+       _xjsObj.Dll.callEx("xsplit.HookSubscribe").then(() => {
+          window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent;                        
+          resolve();
+      }).catch(err => {
+          console.error(err.message);
+          KeyStrokeHandler.removeHookOnRevoke();
+          reject();
+      });
     });
   }
 
   static removeHookOnRevoke() {
     window.OnDllOnInputHookEvent = () => {};
+  }
+
+  static readMidiHookEvent(type, channel, data1, data2) {
+    let _midiEvent = "";    
+    if(Number.isNaN(type) || Number.isNaN(channel) || Number.isNaN(data1) || Number.isNaN(data2) || 0 !== parseInt(data2, 10)){
+      return;
+    }    
+    let _midiMessage = KeyStrokeLib.midiMessageType();
+    if(_midiMessage[type]){
+      _midiEvent = _midiMessage[type] + " " + channel + ":" + data1;      
+      _keyEventEmitter.emit(_midiEvent, _midiEvent);
+    }
   }
 
   static readHookEvent(msg, wparam, lparam) {

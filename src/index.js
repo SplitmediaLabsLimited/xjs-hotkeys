@@ -35,6 +35,7 @@ document.oncontextmenu = function() {
 
 xjs.ready().then(() => {
   KeyStrokeHandler.initWithXjsDllHook(xjs);
+  KeyStrokeHandler.initMidiHook();
 
   let hotKey = obj => {
     console.log("HotKey: emitted event " + obj);
@@ -54,6 +55,16 @@ xjs.ready().then(() => {
     KeyStrokeHandler.off(input.value, hotKey);
   };
 
+  let clickOn2 = () => {
+    let input = document.querySelectorAll('[data-key="keyStroke2"]')[0];
+    KeyStrokeHandler.on(input.value, hotKey);
+  };
+
+  let clickOff2 = () => {
+    let input = document.querySelectorAll('[data-key="keyStroke2"]')[0];
+    KeyStrokeHandler.off(input.value, hotKey);
+  };
+
   let renderReact = () => {
     ReactDOM.render(
       <div>
@@ -65,6 +76,15 @@ xjs.ready().then(() => {
         />
         <button onClick={clickOn}>On</button>
         <button onClick={clickOff}>Off</button>
+        <br/>
+        <XUIKeyStrokes
+          placeholderText="None"
+          inputName="keyStroke2"
+          onValueChange={changeFunc}
+          onInitialization={changeFunc}
+        />
+        <button onClick={clickOn2}>On</button>
+        <button onClick={clickOff2}>Off</button>
       </div>,
       document.getElementById("root")
     );
