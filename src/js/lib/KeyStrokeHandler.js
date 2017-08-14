@@ -35,18 +35,18 @@ export default class KeyStrokeHandler {
     }
   }
 
-  static assignHookOnAccessGranted() {     
+  static assignHookOnAccessGranted() {
     window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(
       _xjsObj.Dll
     );
     _xjsObj.Dll.callEx("xsplit.HookSubscribe").then(() => {}).catch(err => {
       console.error(err.message);
-    });       
+    });
   }
 
   static removeHookOnRevoke() {
     window.OnDllOnInputHookEvent = () => {};
-  }    
+  }
 
   static readHookEvent(msg, wparam, lparam) {
     let _hookMessageType = KeyStrokeLib.hookMessageType();
@@ -143,38 +143,47 @@ export default class KeyStrokeHandler {
   }
 
   //Initialize Midi Devices
-  static initMidiHook(){
+  static initMidiHook() {
     KeyStrokeHandler.midiSubscribe().then(() => {
       window.OnDllMidiDeviceNew = KeyStrokeHandler.midiSubscribe;
-      window.OnDllMidiDeviceRemoved = KeyStrokeHandler.removeMidiHook; 
+      window.OnDllMidiDeviceRemoved = KeyStrokeHandler.removeMidiHook;
     });
   }
 
-  static removeMidiHook(){
+  static removeMidiHook() {
     window.OnDllMidiChannelMessage = () => {};
-  }  
+  }
 
-  static midiSubscribe(){
+  static midiSubscribe() {
     return new Promise((resolve, reject) => {
-       _xjsObj.Dll.call("xsplit.Midi.StartMonitor").then(() => {
-          window.OnDllMidiChannelMessage = KeyStrokeHandler.readMidiHookEvent;                  
+      _xjsObj.Dll
+        .call("xsplit.Midi.StartMonitor")
+        .then(() => {
+          window.OnDllMidiChannelMessage = KeyStrokeHandler.readMidiHookEvent;
           resolve();
-      }).catch(err => {
+        })
+        .catch(err => {
           console.error(err.message);
           KeyStrokeHandler.removeMidiHook();
           reject();
-      });
+        });
     });
-  }  
+  }
 
   static readMidiHookEvent(type, channel, data1, data2) {
-    let _midiEvent = "";    
-    if(Number.isNaN(type) || Number.isNaN(channel) || Number.isNaN(data1) || Number.isNaN(data2) || 0 !== parseInt(data2, 10)){
+    let _midiEvent = "";
+    if (
+      Number.isNaN(type) ||
+      Number.isNaN(channel) ||
+      Number.isNaN(data1) ||
+      Number.isNaN(data2) ||
+      0 !== parseInt(data2, 10)
+    ) {
       return;
-    }    
+    }
     let _midiMessage = KeyStrokeLib.midiMessageType();
-    if(_midiMessage[type]){
-      _midiEvent = _midiMessage[type] + " " + channel + ":" + data1;      
+    if (_midiMessage[type]) {
+      _midiEvent = _midiMessage[type] + " " + channel + ":" + data1;
       _keyEventEmitter.emit(_midiEvent, _midiEvent);
     }
   }

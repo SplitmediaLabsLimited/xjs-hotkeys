@@ -76,7 +76,7 @@ xjs.ready().then(() => {
         />
         <button onClick={clickOn}>On</button>
         <button onClick={clickOff}>Off</button>
-        <br/>
+        <br />
         <XUIKeyStrokes
           placeholderText="None"
           inputName="keyStroke2"

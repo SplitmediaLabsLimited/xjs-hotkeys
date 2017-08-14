@@ -201,14 +201,14 @@ const SPECIALKEYS = {
 };
 
 const MIDI_MESSAGETYPE = {
-  8:"NoteOff",
-  9:"NoteOn",
-  10:"PolyphonicAftertouch",
-  11:"ControlChange",
-  12:"ProgramChange",
-  13:"ChannelAftertouch",
-  14:"PitchWheel"
-}
+  8: "NoteOff",
+  9: "NoteOn",
+  10: "PolyphonicAftertouch",
+  11: "ControlChange",
+  12: "ProgramChange",
+  13: "ChannelAftertouch",
+  14: "PitchWheel"
+};
 
 let _combinationKeys = {
   160: {
@@ -274,7 +274,7 @@ export class KeyStrokeLib {
     return MOUSE_MAP;
   }
 
-  static midiMessageType(){
+  static midiMessageType() {
     return MIDI_MESSAGETYPE;
   }
 }
