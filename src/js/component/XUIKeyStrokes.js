@@ -21,7 +21,8 @@ class XUIKeyStrokes extends Component {
     this.oldDllMidiChannelMessage = () => {};   
     this.state = {
       previousValue: _NO_HOTKEY_VALUE,
-      prevKeyDownValue: ""
+      prevKeyDownValue: "",
+      toggleFocus: false
     };
   }
 
@@ -40,11 +41,15 @@ class XUIKeyStrokes extends Component {
   onBlur(){
     window.OnDllMidiChannelMessage = this.oldDllMidiChannelMessage;
     this.oldDllMidiChannelMessage = {};
+    this.setState({toggleFocus: false});
   }
 
-  onFocus(){
+  onFocus(){    
     this.oldDllMidiChannelMessage = window.OnDllMidiChannelMessage;
     window.OnDllMidiChannelMessage = this.readMidiHookEvent.bind(this);
+    if(!this.state.toggleFocus){      
+      this.setState({toggleFocus: true});
+    }
   }
 
   readMidiHookEvent(type, channel, data1, data2) {
@@ -76,7 +81,11 @@ class XUIKeyStrokes extends Component {
     this.onValueChange(wheelMove, event.target.dataset.key);
   }
 
-  onMouseDown(event) {   
+  onMouseDown(event) {      
+    if(!this.state.toggleFocus){      
+      this.setState({toggleFocus: true});
+      return;
+    }
     event.preventDefault();       
     let clicked = "";
     let _keyPressed = this.determinePressedKey(event);
@@ -88,7 +97,7 @@ class XUIKeyStrokes extends Component {
     }
   }
 
-  onKeyDown(event) {
+  onKeyDown(event) {    
     event.preventDefault();   
     let pressed = "";
     let _wpParamMap = KeyStrokeLib.wParamMap();
