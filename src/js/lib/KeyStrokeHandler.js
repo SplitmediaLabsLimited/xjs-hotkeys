@@ -3,6 +3,7 @@ import { KeyStrokeLib } from "./KeyStrokeLib.js";
 
 let _keyEventEmitter = new Evemit();
 let _xjsObj = {};
+let _midiClientId = "";
 
 export default class KeyStrokeHandler {
   static assignXjs(xjsObj) {
@@ -144,29 +145,35 @@ export default class KeyStrokeHandler {
 
   //Initialize Midi Devices
   static initMidiHook() {
-    KeyStrokeHandler.midiSubscribe().then(() => {
-      window.OnDllMidiDeviceNew = KeyStrokeHandler.midiSubscribe;
-      window.OnDllMidiDeviceRemoved = KeyStrokeHandler.removeMidiHook;
-    });
+    _xjsObj.Dll
+      .call("xsplit.Midi.StartMonitor")
+      .then(midiClientId => {                
+        _midiClientId = midiClientId;        
+        window.OnDllMidiChannelMessage = KeyStrokeHandler.readMidiHookEvent;
+        KeyStrokeHandler.cleanUpPreviousMidiHook();
+        KeyStrokeHandler.createStopMidiMonitorEvent();
+      })
+      .catch(err => {
+        console.error(err);
+        KeyStrokeHandler.removeMidiHook();
+      });
   }
 
-  static removeMidiHook() {
+  static cleanUpPreviousMidiHook() { 
+    let midiClient = localStorage.getItem("midiClient");
+    if(midiClient !== null) window.external.CallDll("xsplit.Midi.StopMonitor", midiClient);    
+  }
+
+  static removeMidiHook() {       
+    window.external.CallDll("xsplit.Midi.StopMonitor", _midiClientId);
+    localStorage.setItem("midiClient", _midiClientId);
+    _midiClientId = "";
     window.OnDllMidiChannelMessage = () => {};
   }
 
-  static midiSubscribe() {
-    return new Promise((resolve, reject) => {
-      _xjsObj.Dll
-        .call("xsplit.Midi.StartMonitor")
-        .then(() => {
-          window.OnDllMidiChannelMessage = KeyStrokeHandler.readMidiHookEvent;
-          resolve();
-        })
-        .catch(err => {
-          console.error(err.message);
-          KeyStrokeHandler.removeMidiHook();
-          reject();
-        });
+  static createStopMidiMonitorEvent() {
+    window.addEventListener("beforeunload", event => {
+      KeyStrokeHandler.removeMidiHook();
     });
   }
 
