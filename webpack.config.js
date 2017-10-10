@@ -1,81 +1,96 @@
-'use strict';
-
-const eslintFormatter = require('react-dev-utils/eslintFormatter');
+const path = require('path');
 const webpack = require('webpack');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const noop = require('noop-webpack-plugin');
 
-module.exports = {
-  bail: true,
-  devtool: 'source-map',
-  entry:  {
-    lib: './src/js/lib/KeyStrokeHandler.js',
-    ui: './src/js/component/XUIKeyStrokes.js'
-  },  
-  output: {     
-    path: __dirname + '/dist',
-    filename: 'js/[name].min.js' },
-  resolve: {
-    extensions: ['.js', '.jsx', '.json']
-  },
-  module: {
-    strictExportPresence: true,   
-    rules: [
-        {
-          test: /\.css$/,
-          loader: 'css-loader',
+module.exports = (env = {}) => {    
+    return {
+        context: path.join(__dirname),
+        // initially, let's just have one
+        entry: __dirname + '/src/bundle.js',
+        output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: 'xjs-hotkeys.bundle.js',
+            library: 'XJSHotKeys',
+            libraryTarget: 'umd',
+            umdNamedDefine: true
         },
-        {
-          test: /\.(jpg|png)$/,
-          loader: 'url-loader'
-        },
-       {
-        test: /\.jsx?$/,
-        enforce: 'pre',
-        use: [
-          {
-            options: {
-              formatter: eslintFormatter              
-            },
-            loader: 'eslint-loader',
-          },
-        ]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,        
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              babelrc: false,
-              presets: [
-                ['es2015', { modules: false }],
-                'react',
-              ],
+        externals: {
+            react: {
+                commonjs: 'react',
+                commonjs2: 'react',
+                amd: 'react',
+                umd: 'react'
             }
-          }
-        ]
-      }      
-    ]
-  },
-  plugins:[
-    // Minify the code.
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        // This feature has been reported as buggy a few times, such as:
-        // https://github.com/mishoo/UglifyJS2/issues/1964
-        // We'll wait with enabling it by default until it is more solid.
-        reduce_vars: false,
-      },
-      output: {
-        comments: false,
-      },
-      sourceMap: true,
-    })
-  ],
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
-};
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.jsx?$/,
+                    exclude: /(node_modules|bower_components)/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            babelrc: false, // avoid any confusion
+                            presets: [
+                                ['env', { modules: false }],
+                                'react'
+                            ],
+                            env: {
+                                production: {
+                                    // additionally remove unused ES2015 classes
+                                    presets: ['minify']
+                                }
+                            },
+                            plugins: ['transform-class-properties']
+                        }
+                    }
+                },
+                {
+                    test: /\.s?css$/,
+                    use: [
+                        {   loader: 'style-loader' },
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                modules: true, // enables CSS modules,
+                                    // with dev still having readable class names
+                                localIdentName: '[hash:base64:5]'
+                            }
+                        },
+                        { loader: 'sass-loader' }
+                    ]
+                },
+                {
+                    test: /\.(png|jpg|svg|woff)$/,
+                    // when building production, convert everything to inlined data URLs
+                    // but use actual filenames in development
+                    use:{ loader: 'url-loader' }                         
+                }
+            ]
+        },
+        plugins: [
+            new webpack.optimize.ModuleConcatenationPlugin(),
+            new UglifyJSPlugin({ sourceMap: true }),
+            new webpack.HashedModuleIdsPlugin(),
+            new webpack.DefinePlugin({
+                'process.env': {
+                    'NODE_ENV': JSON.stringify('production')
+                }
+            })
+        ],
+        resolve: {
+            // This allows imports such as: import MyClass from 'myjsfile';
+            extensions: ['.js', '.jsx', '.json'],
+            modules: [
+                path.resolve(__dirname, 'src'),
+                'node_modules'
+            ]
+        },
+        devtool: 'source-map',
+        devServer: {
+            contentBase: './src',
+            hot: true
+        }
+    }
+}

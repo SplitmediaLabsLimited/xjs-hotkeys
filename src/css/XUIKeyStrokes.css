@@ -1,19 +1,25 @@
-.xui-keyStroke {
-	background-color: #212121;
-	color: #CCC;	
+.xui-keyStroke {	
 	position: relative;	
 	display: inline-block;
 }
 
 .xui-keyStroke input {
-	color: #000;
-	width: 120px;
-	padding: 0 20px 1px 5px;
-	font-size: 12px;
-	line-height: 16px;
+	background-color: #393939;
+	border: none;
+	color: #CCCCCC;
+	width: 215px;
+	padding: 1px 20px 1px 5px;
+	font-size: 12px;	
+	height: 24px;
 	vertical-align: middle;
-	margin: 0;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-left: 2px;
 	outline: none;
+}
+
+.xui-keyStroke.isEmpty input {
+	color: #777777;
 }
 
 .xui-keyStroke input:disabled {
@@ -24,7 +30,7 @@
 }
 
 .xui-keyStroke input:focus {	
-	color: #000;
+	color: #CCCCCC;
 }
 
 .xui-keyStroke button[name=delete] {
@@ -33,7 +39,7 @@
 	height: 8px;
 	border: none;
 	background-color: transparent;
-	background-image: url("../images/close.png");
+	background-image: url("../images/close_hover.png");
 	margin-left: -15px;
 	padding: 0;
 	outline: none;
