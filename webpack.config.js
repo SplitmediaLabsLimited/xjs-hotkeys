@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const noop = require('noop-webpack-plugin');
 
 module.exports = (env = {}) => {    
     return {
@@ -53,9 +52,7 @@ module.exports = (env = {}) => {
                         {
                             loader: 'css-loader',
                             options: {
-                                modules: true, // enables CSS modules,
-                                    // with dev still having readable class names
-                                localIdentName: '[hash:base64:5]'
+                                modules: true // enables CSS modules,                                  
                             }
                         },
                         { loader: 'sass-loader' }
@@ -63,8 +60,7 @@ module.exports = (env = {}) => {
                 },
                 {
                     test: /\.(png|jpg|svg|woff)$/,
-                    // when building production, convert everything to inlined data URLs
-                    // but use actual filenames in development
+                    // when building production, convert everything to inlined data URLs                    
                     use:{ loader: 'url-loader' }                         
                 }
             ]
