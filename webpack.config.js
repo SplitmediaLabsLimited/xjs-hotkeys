@@ -11,7 +11,7 @@ module.exports = (env = {}) => {
         output: {
             path: path.resolve(__dirname, 'dist'),
             filename: 'xjs-hotkeys.bundle.js',
-            library: 'XJSHotKeys',
+            library: 'xjs-hotkeys',
             libraryTarget: 'umd',
             umdNamedDefine: true
         },
