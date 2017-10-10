@@ -1,7 +1,2 @@
-import KeyStrokeHandler from "./js/lib/KeyStrokeHandler.js";
-import XUIKeyStrokes from "./js/component/XUIKeyStrokes.js";
-
-export default {
-	KeyStrokeHandler,
-	XUIKeyStrokes
-}
+export { default as KeyStrokeHandler } from './js/lib/KeyStrokeHandler.js';
+export { default as XUIKeyStrokes } from './js/component/XUIKeyStrokes.js';
