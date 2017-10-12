@@ -54,10 +54,7 @@ module.exports = (env = {}) => {
                         {
                             loader: 'css-loader',
                             options: {
-                                modules: true, // enables CSS modules,
-                                    // with dev still having readable class names
-                                localIdentName: isProduction ? '[hash:base64:5]'
-                                    : '[name]__[local]--[hash:base64:5]'
+                                importLoaders: 1
                             }
                         },
                         { loader: 'sass-loader' }
