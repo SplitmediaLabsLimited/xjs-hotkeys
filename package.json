@@ -6,6 +6,7 @@
   "dependencies": {
     "evemit": "^1.0.2",
     "node-sass": "^4.5.3",
+    "postinstall-build": "^5.0.1",
     "xjs-framework": "git+https://github.com/xjsframework/xjs.git#12EC999"
   },
   "devDependencies": {
@@ -19,12 +20,12 @@
     "noop-webpack-plugin": "^1.0.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-scripts": "1.0.10",
+    "react-scripts": "^1.0.10",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "url-loader": "^0.5.9",
-    "webpack": "^3.5.6"
+    "webpack": "^3.7.1"
   },
   "repository": {
     "type": "git",
@@ -32,16 +33,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "buildReactScripts": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "eject": "react-scripts eject",
+    "build": "webpack --env.production"
   }
 }

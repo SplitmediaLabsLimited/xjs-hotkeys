@@ -1,8 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const noop = require('noop-webpack-plugin');
 
-module.exports = (env = {}) => {    
+module.exports = (env = {}) => {
+    const isProduction = env.production === true;
     return {
         context: path.join(__dirname),
         // initially, let's just have one
@@ -46,32 +48,45 @@ module.exports = (env = {}) => {
                     }
                 },
                 {
-                    test: /\.css$/,
+                    test: /\.s?css$/,
                     use: [
                         {   loader: 'style-loader' },
-                        {   loader: 'css-loader', 
+                        {
+                            loader: 'css-loader',
                             options: {
-                              importLoaders: 1
+                                modules: true, // enables CSS modules,
+                                    // with dev still having readable class names
+                                localIdentName: isProduction ? '[hash:base64:5]'
+                                    : '[name]__[local]--[hash:base64:5]'
                             }
-                        }                      
+                        },
+                        { loader: 'sass-loader' }
                     ]
                 },
                 {
                     test: /\.(png|jpg|svg|woff)$/,
-                    // when building production, convert everything to inlined data URLs                    
-                    use:{ loader: 'url-loader' }                         
+                    // when building production, convert everything to inlined data URLs
+                    // but use actual filenames in development
+                    use: isProduction ?
+                        { loader: 'url-loader' } :
+                        {
+                            loader: 'file-loader',
+                            options: {
+                                name: '[name].[ext]'
+                            }
+                        }
                 }
             ]
         },
         plugins: [
             new webpack.optimize.ModuleConcatenationPlugin(),
-            new UglifyJSPlugin({ sourceMap: true }),
-            new webpack.HashedModuleIdsPlugin(),
-            new webpack.DefinePlugin({
+            isProduction ? new UglifyJSPlugin({ sourceMap: true }) : noop(),
+            isProduction ? new webpack.HashedModuleIdsPlugin() : noop(),
+            isProduction ? new webpack.DefinePlugin({
                 'process.env': {
                     'NODE_ENV': JSON.stringify('production')
                 }
-            })
+            }) : noop() // allows dependencies like React to build differently in prod
         ],
         resolve: {
             // This allows imports such as: import MyClass from 'myjsfile';
@@ -81,7 +96,7 @@ module.exports = (env = {}) => {
                 'node_modules'
             ]
         },
-        devtool: 'source-map',
+        devtool: isProduction ? 'source-map' : 'eval-source-map',
         devServer: {
             contentBase: './src',
             hot: true

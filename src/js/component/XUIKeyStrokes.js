@@ -41,8 +41,7 @@ class XUIKeyStrokes extends Component {
     this.inputKeyStroke.focus();
   }
 
-  callValueChange() {
-    let self = this;
+  callValueChange() {    
     // we use to timeout to resolve race-condition bug
     // of the same event for setting hotkeys also triggering the macro
     setTimeout(() => {
