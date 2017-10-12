@@ -47,8 +47,7 @@ module.exports = (env = {}) => {
                 },
                 {
                     test: /\.css$/,
-                    use: [
-                        {   loader: 'style-loader' },
+                    use: [                        
                         {   loader: 'css-loader', 
                             options: {
                               importLoaders: 1
@@ -65,7 +64,7 @@ module.exports = (env = {}) => {
         },
         plugins: [
             new webpack.optimize.ModuleConcatenationPlugin(),
-            new UglifyJSPlugin({ sourceMap: true }),
+            new UglifyJSPlugin({ sourceMap: false }),
             new webpack.HashedModuleIdsPlugin(),
             new webpack.DefinePlugin({
                 'process.env': {
@@ -80,8 +79,7 @@ module.exports = (env = {}) => {
                 path.resolve(__dirname, 'src'),
                 'node_modules'
             ]
-        },
-        devtool: 'source-map',
+        },        
         devServer: {
             contentBase: './src',
             hot: true
