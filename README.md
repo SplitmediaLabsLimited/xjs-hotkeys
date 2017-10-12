@@ -21,6 +21,12 @@ initWithXjsDllHook(xjsObj)
 initMidiHook()
   - loads Xsplit Midi Dll to listen to Midi device inputs.
 
+on(event, handler)
+  - sets emitter for the event.
+
+off(event, handler)
+- removes emitter for the event.
+
 ##XUIKeyStrokes
 - a react component to accept and display key and midi strokes.
 
