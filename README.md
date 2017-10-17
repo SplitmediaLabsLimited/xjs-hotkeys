@@ -30,12 +30,13 @@ off(event, handler)
 ### Example usage
 
 #### package.json
-
+```
 "xjs-hotkeys": "git+https://github.com/xjsframework/xjs-hotkeys.git",
 "xjs-framework": "git+https://github.com/xjsframework/xjs.git"
+```
 
 #### sample.js
-
+```
 import React from "react";
 import ReactDOM from "react-dom";
 import xjs from '../node_modules/xjs-framework/dist/xjs-es2015.min.js';
@@ -82,6 +83,7 @@ xjs.ready().then(() => {
   renderReact();
 
 });
+```
 
 
 
