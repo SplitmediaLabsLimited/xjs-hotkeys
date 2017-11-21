@@ -61,7 +61,7 @@ module.exports = (env = {}) => {
                     ]
                 },
                 {
-                    test: /\.(png|jpg|svg|woff)$/,
+                    test: /\.(png|jpg|woff)$/,
                     // when building production, convert everything to inlined data URLs
                     // but use actual filenames in development
                     use: isProduction ?
@@ -72,7 +72,14 @@ module.exports = (env = {}) => {
                                 name: '[name].[ext]'
                             }
                         }
+                },
+                {
+                    test: /\.svg$/,
+                    use: {
+                        loader: 'svg-url-loader'
+                    }
                 }
+
             ]
         },
         plugins: [
