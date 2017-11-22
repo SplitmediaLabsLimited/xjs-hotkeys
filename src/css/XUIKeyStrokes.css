@@ -10,27 +10,51 @@
 	width: 215px;
 	padding: 1px 20px 1px 5px;
 	font-size: 12px;	
+	line-height: 17px;
 	height: 24px;
 	vertical-align: middle;
 	margin-top: 2px;
 	margin-bottom: 2px;
 	margin-left: 2px;
+	border: 1px solid #040404;
+	cursor: default;	
 	outline: none;
 }
 
+.xui-keyStroke input:disabled {		
+	color: #666666;
+	background-color: #292929;
+}
+
+.xui-keyStroke input:hover {			
+	background-color: #464646;
+}
+
+.xui-keyStroke input:focus {		
+	background-color: #505050;
+}
+
 .xui-keyStroke.isEmpty input {
-	color: #777777;
+	color: #888888;
+	background-color: #393939;
 }
 
-.xui-keyStroke input:disabled {
-	background: none;
-	cursor: default;
-	box-shadow: none;
-	color: #888;
+.xui-keyStroke.isEmpty input:disabled {		
+	color: #464646;
 }
 
-.xui-keyStroke input:focus {	
-	color: #CCCCCC;
+.xui-keyStroke.isEmpty input:focus {		
+	background-color: #505050;
+}
+
+.xui-keyStroke.isEmpty input:hover {		
+	background-color: #464646;
+}
+
+.xui-keyStroke input:focus + button[name=delete],
+.xui-keyStroke input:hover + button[name=delete]
+{
+	background-image: url("../images/close.svg");
 }
 
 .xui-keyStroke button[name=delete] {
@@ -38,14 +62,14 @@
 	width: 8px;
 	height: 8px;
 	border: none;
-	background-color: transparent;
-	background-image: url("../images/close_hover.png");
+	background-color: transparent;	
 	margin-left: -15px;
 	padding: 0;
 	outline: none;
 }
 
 .xui-keyStroke button[name=delete]:hover,
-.xui-keyStroke button[name=delete]:focus {	
-	background-image: url("../images/close_hover.png");	
+.xui-keyStroke input:focus + button[name=delete]:hover
+ {	
+	background-image: url("../images/close_hover.svg");	
 }

@@ -36,9 +36,16 @@ export default class KeyStrokeHandler {
     }
   }
 
-  static assignHookOnAccessGranted() {
-    window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent.bind(_xjsObj.Dll);
-    _xjsObj.Dll.callEx('xsplit.HookSubscribe').then(() => {}).catch(err => {
+  static assignHookOnAccessGranted() {  
+    //cleanup first before 
+    _xjsObj.Dll.callEx('xsplit.HookUnsubscribe').then(() => {  
+      _xjsObj.Dll.callEx('xsplit.HookSubscribe').then(() => {
+        window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent;
+      }).catch(err => {      
+        console.error(err.message);
+      });
+    }).catch(err => { 
+      KeyStrokeHandler.removeHookOnRevoke();     
       console.error(err.message);
     });
   }

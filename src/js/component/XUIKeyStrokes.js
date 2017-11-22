@@ -17,7 +17,7 @@ class XUIKeyStrokes extends Component {
     this.getValueOnSave = this.getValueOnSave.bind(this);
     this.inputKeyStroke = null;
     this.onBlur = this.onBlur.bind(this);
-    this.onFocus = this.onFocus.bind(this);
+    this.onFocus = this.onFocus.bind(this);    
     this.oldDllMidiChannelMessage = () => {};
     this.noHotkeyValue = typeof props.noHotkeyValue !== 'undefined' ? props.noHotkeyValue : 'None';
     this.state = {
@@ -152,7 +152,7 @@ class XUIKeyStrokes extends Component {
       this.onValueChange(pressed, event.target.dataset.key);
     }
     this.callValueChange();
-  }
+  }  
 
   determinePressedKey(event) {
     let pressed = '';
@@ -225,7 +225,9 @@ class XUIKeyStrokes extends Component {
           onBlur={this.onBlur}
           onFocus={this.onFocus}
         />
-        <button name="delete" onClick={this.onDeleteClick} />
+        <button name="delete" 
+          onClick={this.onDeleteClick}           
+        />        
       </div>
     );
   }

@@ -33,9 +33,29 @@ document.oncontextmenu = function() {
   return false;
 };
 
-xjs.ready().then(() => {
-  KeyStrokeHandler.initWithXjsDllHook(xjs);
-  KeyStrokeHandler.initMidiHook();
+xjs.ready().then(() => {  
+  KeyStrokeHandler.assignXjs(xjs);
+  KeyStrokeHandler.removeHookOnRevoke();         
+
+  let dll = xjs.Dll;
+  dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']);
+  dll.on('access-granted', function() {    
+    KeyStrokeHandler.assignHookOnAccessGranted();
+    KeyStrokeHandler.initMidiHook();
+  });
+
+  dll.on('access-revoked', function() {       
+    KeyStrokeHandler.removeHookOnRevoke();        
+  });
+
+  dll.isAccessGranted().then(function(isGranted) {
+    if (isGranted) {     
+      KeyStrokeHandler.assignHookOnAccessGranted();
+      KeyStrokeHandler.initMidiHook();
+    } else {      
+      KeyStrokeHandler.removeHookOnRevoke();      
+    }
+  });  
 
   let hotKey = obj => {
     console.log("HotKey: emitted event " + obj);
