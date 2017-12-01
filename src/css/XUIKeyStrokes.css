@@ -54,7 +54,7 @@
 .xui-keyStroke input:focus + button[name=delete],
 .xui-keyStroke input:hover + button[name=delete]
 {
-	background-image: url("../images/close.svg");
+	background-image: url("../images/field-delete-(normal).svg");
 }
 
 .xui-keyStroke button[name=delete] {
@@ -71,5 +71,5 @@
 .xui-keyStroke button[name=delete]:hover,
 .xui-keyStroke input:focus + button[name=delete]:hover
  {	
-	background-image: url("../images/close_hover.svg");	
+	background-image: url("../images/field-delete-(hover).svg");	
 }
