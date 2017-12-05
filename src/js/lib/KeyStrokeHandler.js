@@ -15,6 +15,7 @@ export default class KeyStrokeHandler {
 
   static initWithXjsDllHook(xjsObj) {
     _xjsObj = xjsObj;
+    KeyStrokeHandler.removeHookOnRevoke();    
     if (_xjsObj && _xjsObj.hasOwnProperty('Dll')) {
       let dll = _xjsObj.Dll;
       dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']);
@@ -38,10 +39,12 @@ export default class KeyStrokeHandler {
 
   static assignHookOnAccessGranted() {  
     //cleanup first before 
+     KeyStrokeHandler.removeHookOnRevoke();    
     _xjsObj.Dll.callEx('xsplit.HookUnsubscribe').then(() => {  
       _xjsObj.Dll.callEx('xsplit.HookSubscribe').then(() => {
         window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent;
-      }).catch(err => {      
+      }).catch(err => {   
+        KeyStrokeHandler.removeHookOnRevoke();        
         console.error(err.message);
       });
     }).catch(err => { 
