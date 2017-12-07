@@ -129,13 +129,24 @@ export default class KeyStrokeHandler {
           _combinedKeysMap.set(KeyStrokeLib.combinedKeyPressed()[key].value, key);
         }
       }
-    }
-    let _newSortedMap = new Map([..._combinedKeysMap.entries()].sort());
+    }    
     let _sep = '';
-    _newSortedMap.forEach((value, key, map) => {
-      _activeEvent = _activeEvent + _sep + key;
+
+    if(_combinedKeysMap.has('Ctrl')){
+      _activeEvent = _activeEvent + _sep + 'Ctrl';
       _sep = '+';
-    });
+    }
+
+    if(_combinedKeysMap.has('Shift')){
+      _activeEvent = _activeEvent + _sep + 'Shift';
+      _sep = '+';
+    }
+
+    if(_combinedKeysMap.has('Alt')){
+      _activeEvent = _activeEvent + _sep + 'Alt';
+      _sep = '+';
+    }   
+
     return { event: _activeEvent, sep: _sep };
   }
 

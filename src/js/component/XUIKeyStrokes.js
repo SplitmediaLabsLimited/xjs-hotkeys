@@ -158,17 +158,17 @@ class XUIKeyStrokes extends Component {
     let pressed = '';
     let sep = '';
     let _combinedKeys = KeyStrokeLib.combinedKeyPressed();
-    if (!_combinedKeys[event.which]) {
-      if (event.altKey) {
-        pressed = pressed + sep + 'Alt';
-        sep = '+';
-      }
+    if (!_combinedKeys[event.which]) {      
       if (event.ctrlKey) {
         pressed = pressed + sep + 'Ctrl';
         sep = '+';
       }
       if (event.shiftKey) {
         pressed = pressed + sep + 'Shift';
+        sep = '+';
+      }
+      if (event.altKey) {
+        pressed = pressed + sep + 'Alt';
         sep = '+';
       }
     }
