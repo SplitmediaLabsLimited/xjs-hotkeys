@@ -134,15 +134,15 @@ class XUIKeyStrokes extends Component {
     }
     let _keyPressed = this.determinePressedKey(event);
     if (_wpParamMap[event.which]) {
-      pressed = _keyPressed.pressed + _keyPressed.sep + _wpParamMap[event.which];
+      pressed = _keyPressed.pressed + (KeyStrokeLib.combinedKeyPressed()[event.which] ? '' : _keyPressed.sep + _wpParamMap[event.which]);
       event.target.value = pressed;
       this.onValueChange(pressed, event.target.dataset.key);
     }
   }
 
-  onKeyUp(event) {
-    this.setState({ prevKeyDownValue: '' });
+  onKeyUp(event) {    
     event.preventDefault();
+    this.setState({ prevKeyDownValue: '' });
     let pressed = '';
     let _wpParamMap = KeyStrokeLib.wParamMap();
     let _keyPressed = this.determinePressedKey(event);
@@ -158,9 +158,9 @@ class XUIKeyStrokes extends Component {
     let pressed = '';
     let sep = '';
     let _combinedKeys = KeyStrokeLib.combinedKeyPressed();
-    if (!_combinedKeys[event.which]) {      
+    //if (!_combinedKeys[event.which]) {      
       if (event.ctrlKey) {
-        pressed = pressed + sep + 'Ctrl';
+        pressed = 'Ctrl';
         sep = '+';
       }
       if (event.shiftKey) {
@@ -171,7 +171,7 @@ class XUIKeyStrokes extends Component {
         pressed = pressed + sep + 'Alt';
         sep = '+';
       }
-    }
+    //}
     return { pressed: pressed, sep: sep };
   }
 
