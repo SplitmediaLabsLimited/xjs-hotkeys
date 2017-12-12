@@ -33,27 +33,10 @@
 	background-color: #505050;
 }
 
-.xui-keyStroke.isEmpty input {
-	color: #888888;
-	background-color: #393939;
-}
-
-.xui-keyStroke.isEmpty input:disabled {		
-	color: #464646;
-}
-
-.xui-keyStroke.isEmpty input:focus {		
-	background-color: #505050;
-}
-
-.xui-keyStroke.isEmpty input:hover {		
-	background-color: #464646;
-}
-
 .xui-keyStroke input:focus + button[name=delete],
 .xui-keyStroke input:hover + button[name=delete]
 {
-	background-image: url("../images/field-delete-(normal).svg");
+	background-image: url("../images/field-delete-normal.svg");
 }
 
 .xui-keyStroke button[name=delete] {
@@ -65,10 +48,11 @@
 	margin-left: -15px;
 	padding: 0;
 	outline: none;
+	cursor: pointer;
 }
 
 .xui-keyStroke button[name=delete]:hover,
 .xui-keyStroke input:focus + button[name=delete]:hover
  {	
-	background-image: url("../images/field-delete-(hover).svg");	
+	background-image: url("../images/field-delete-hover.svg");	
 }

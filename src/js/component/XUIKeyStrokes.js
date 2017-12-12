@@ -18,26 +18,15 @@ class XUIKeyStrokes extends Component {
     this.inputKeyStroke = null;
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this);    
-    this.oldDllMidiChannelMessage = () => {};
-    this.noHotkeyValue = typeof props.noHotkeyValue !== 'undefined' ? props.noHotkeyValue : 'None';
-    this.state = {
-      previousValue: this.noHotkeyValue,
+    this.oldDllMidiChannelMessage = () => {};    
+    this.state = {      
       prevKeyDownValue: '',
-      toggleFocus: false,
-      isEmpty: props.value ? props.value === '' : true
+      toggleFocus: false
     };
   }
 
-  onValueChange(value, dataKey) {
-    let eventValue = value;
-    this.setState({ previousValue: eventValue });
-    if (value === '') {
-      this.inputKeyStroke.value = this.noHotkeyValue ? this.noHotkeyValue : '';
-      this.setState({ isEmpty: true });
-    } else {
-      this.setState({ isEmpty: false });
-      this.inputKeyStroke.value = value;
-    }
+  onValueChange(value, dataKey) {        
+    this.inputKeyStroke.value = value;    
     this.inputKeyStroke.focus();
   }
 
@@ -45,9 +34,7 @@ class XUIKeyStrokes extends Component {
     // we use to timeout to resolve race-condition bug
     // of the same event for setting hotkeys also triggering the macro
     setTimeout(() => {
-      let eventValue = this.inputKeyStroke.value === this.noHotkeyValue
-        ? ''
-        : this.inputKeyStroke.value;
+      let eventValue = this.inputKeyStroke.value;
       this.props.onValueChange({
         inputKey: this.inputKeyStroke.dataset.key,
         value: eventValue,
@@ -157,7 +144,7 @@ class XUIKeyStrokes extends Component {
   determinePressedKey(event) {
     let pressed = '';
     let sep = '';
-    let _combinedKeys = KeyStrokeLib.combinedKeyPressed();
+    //let _combinedKeys = KeyStrokeLib.combinedKeyPressed();
     //if (!_combinedKeys[event.which]) {      
       if (event.ctrlKey) {
         pressed = 'Ctrl';
@@ -187,35 +174,31 @@ class XUIKeyStrokes extends Component {
   getValueOnSave() {
     let valueObject = {};
     valueObject['inputName'] = this.props.inputName;
-    valueObject['value'] = this.inputKeyStroke.value === this.noHotkeyValue
-      ? ''
-      : this.inputKeyStroke.value;
+    valueObject['value'] = this.inputKeyStroke.value;
     return valueObject;
   }
 
   render() {
-    let defaultValue = 'None';
+    let defaultValue = '';
+    let placeHolderText = 'None';
     let thisClass = 'xui-keyStroke';
+
     if (
-      typeof this.props.placeholderText !== 'undefined' &&
-      typeof this.props.value === 'undefined'
+      typeof this.props.placeholderText !== 'undefined' 
     ) {
-      defaultValue = this.props.placeholderText;
-    } else if (typeof this.props.value !== 'undefined') {
+      placeHolderText = this.props.placeholderText;
+    } 
+
+    if (typeof this.props.value !== 'undefined') {
       defaultValue = this.props.value;
     }
-    if (defaultValue === '' && this.noHotkeyValue) {
-      defaultValue = this.noHotkeyValue;
-    }
-    if (this.state.isEmpty) {
-      thisClass = 'xui-keyStroke isEmpty';
-    }
+    
     return (
       <div className={thisClass}>
         <input
           type="text"
           ref={this.getInputKeyStoke}
-          defaultValue={defaultValue}
+          placeholder={placeHolderText}
           data-key={this.props.inputName}
           onKeyDown={this.onKeyDown}
           onMouseDown={this.onMouseDown}
@@ -224,6 +207,7 @@ class XUIKeyStrokes extends Component {
           onWheel={this.onWheel}
           onBlur={this.onBlur}
           onFocus={this.onFocus}
+          defaultValue={defaultValue}
         />
         <button name="delete" 
           onClick={this.onDeleteClick}           
@@ -234,9 +218,7 @@ class XUIKeyStrokes extends Component {
 
   componentDidMount() {
     if (typeof this.props.onInitialization === 'function') {
-      let keyStrokeValue = this.inputKeyStroke.value === this.noHotkeyValue
-        ? ''
-        : this.inputKeyStroke.value;
+      let keyStrokeValue = this.inputKeyStroke.value;
       this.props.onInitialization({
         inputKey: this.inputKeyStroke.dataset.key,
         value: keyStrokeValue,
@@ -247,7 +229,7 @@ class XUIKeyStrokes extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps['value'] === undefined && this.props.value !== prevProps['value']) {
-      this.inputKeyStroke.value = this.props.value === '' ? this.noHotkeyValue : this.props.value;
+      this.inputKeyStroke.value = this.props.value;
       this.props.onInitialization({
         inputKey: this.inputKeyStroke.dataset.key,
         value: this.props.value,
