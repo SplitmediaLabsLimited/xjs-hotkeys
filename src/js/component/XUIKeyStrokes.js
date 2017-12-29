@@ -13,8 +13,7 @@ class XUIKeyStrokes extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onWheel = this.onWheel.bind(this);
-    this.getInputKeyStoke = this.getInputKeyStoke.bind(this);
-    this.getValueOnSave = this.getValueOnSave.bind(this);
+    this.getInputKeyStoke = this.getInputKeyStoke.bind(this);    
     this.inputKeyStroke = null;
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this);    
@@ -35,12 +34,7 @@ class XUIKeyStrokes extends Component {
     // of the same event for setting hotkeys also triggering the macro
     setTimeout(() => {
       let eventValue = this.inputKeyStroke.value;
-      this.props.onValueChange({
-        inputKey: this.inputKeyStroke.dataset.key,
-        value: eventValue,
-        label: eventValue,
-        callToSave: true
-      });
+      this.props.onValueChange(value);
     }, 0);
   }
 
@@ -169,14 +163,7 @@ class XUIKeyStrokes extends Component {
 
   getInputKeyStoke(ref) {
     this.inputKeyStroke = ref;
-  }
-
-  getValueOnSave() {
-    let valueObject = {};
-    valueObject['inputName'] = this.props.inputName;
-    valueObject['value'] = this.inputKeyStroke.value;
-    return valueObject;
-  }
+  } 
 
   render() {
     let defaultValue = '';
@@ -214,29 +201,7 @@ class XUIKeyStrokes extends Component {
         />        
       </div>
     );
-  }
-
-  componentDidMount() {
-    if (typeof this.props.onInitialization === 'function') {
-      let keyStrokeValue = this.inputKeyStroke.value;
-      this.props.onInitialization({
-        inputKey: this.inputKeyStroke.dataset.key,
-        value: keyStrokeValue,
-        label: keyStrokeValue
-      });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps['value'] === undefined && this.props.value !== prevProps['value']) {
-      this.inputKeyStroke.value = this.props.value;
-      this.props.onInitialization({
-        inputKey: this.inputKeyStroke.dataset.key,
-        value: this.props.value,
-        label: this.props.value
-      });
-    }
-  }
+  } 
 }
 
 export default XUIKeyStrokes;
