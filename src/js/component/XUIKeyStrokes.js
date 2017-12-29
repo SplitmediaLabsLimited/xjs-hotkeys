@@ -34,7 +34,7 @@ class XUIKeyStrokes extends Component {
     // of the same event for setting hotkeys also triggering the macro
     setTimeout(() => {
       let eventValue = this.inputKeyStroke.value;
-      this.props.onValueChange(value);
+      this.props.onValueChange(eventValue);
     }, 0);
   }
 
