@@ -4,6 +4,7 @@ import { KeyStrokeLib } from "./KeyStrokeLib.js";
 let _keyEventEmitter = new Evemit();
 let _xjsObj = {};
 let _midiClientId = '';
+let _preventEmitKeyHandler = false;
 
 export default class KeyStrokeHandler {
   static assignXjs(xjsObj) {
@@ -11,6 +12,10 @@ export default class KeyStrokeHandler {
     if (!_xjsObj && !_xjsObj.hasOwnProperty('Dll')) {
       return new Error('Invalid xjs object parameter');
     }
+  }
+
+  static preventKeyHandlerEmit(value) {    
+    _preventEmitKeyHandler = value;    
   }
 
   static initWithXjsDllHook(xjsObj) {
@@ -101,7 +106,9 @@ export default class KeyStrokeHandler {
     let _eventValue = KeyStrokeHandler.detectCombinedKeys();
     _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
     if (_eventValue.event && _eventValue.event !== '') {
-      _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
+      if(!_preventEmitKeyHandler){
+        _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
+      }
     }
   }
 
@@ -155,7 +162,9 @@ export default class KeyStrokeHandler {
     let _wParam = KeyStrokeLib.wParamMap();
     _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
     if (_eventValue.event && _eventValue.event !== '') {
-      _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
+      if(!_preventEmitKeyHandler){        
+        _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
+      }
     }
   }
 
@@ -208,7 +217,9 @@ export default class KeyStrokeHandler {
     let _midiMessage = KeyStrokeLib.midiMessageType();
     if (_midiMessage[type]) {
       _midiEvent = _midiMessage[type] + ' ' + channel + ':' + data1;
-      _keyEventEmitter.emit(_midiEvent, _midiEvent);
+      if(!_preventEmitKeyHandler){
+        _keyEventEmitter.emit(_midiEvent, _midiEvent);
+      }
     }
   }
 

@@ -93,6 +93,7 @@ xjs.ready().then(() => {
           inputName="keyStroke1"
           onValueChange={changeFunc}
           onInitialization={changeFunc}
+          KeyStrokeHandler={KeyStrokeHandler}
         />
         <button onClick={clickOn}>On</button>
         <button onClick={clickOff}>Off</button>
@@ -102,6 +103,7 @@ xjs.ready().then(() => {
           inputName="keyStroke2"
           onValueChange={changeFunc}
           onInitialization={changeFunc}
+          KeyStrokeHandler={KeyStrokeHandler}
         />
         <button onClick={clickOn2}>On</button>
         <button onClick={clickOff2}>Off</button>

@@ -18,6 +18,9 @@ initWithXjsDllHook(xjsObj)
 initMidiHook()
   - loads Xsplit Midi Dll to listen to Midi device inputs.
 
+preventKeyHandlerEmit(value)
+  - option to prevent KeyStrokeHandler to emit midi/keyStrokes
+
 on(event, handler)
   - sets emitter for the event.
 

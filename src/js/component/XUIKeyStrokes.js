@@ -38,18 +38,26 @@ class XUIKeyStrokes extends Component {
     }, 0);
   }
 
-  onBlur() {
+  onBlur() {       
+    //option to turn on/off KeyStrokeHandler emitter
+    if(this.props.KeyStrokeHandler) {
+      this.props.KeyStrokeHandler.preventKeyHandlerEmit(false);
+    }
     window.OnDllMidiChannelMessage = this.oldDllMidiChannelMessage;
-    this.oldDllMidiChannelMessage = {};
+    this.oldDllMidiChannelMessage = {}; 
     this.setState({ toggleFocus: false });
   }
 
-  onFocus() {
+  onFocus() {     
+    //option to turn on/off KeyStrokeHandler emitter
+    if(this.props.KeyStrokeHandler) {
+      this.props.KeyStrokeHandler.preventKeyHandlerEmit(true);
+    }
     this.oldDllMidiChannelMessage = window.OnDllMidiChannelMessage;
     window.OnDllMidiChannelMessage = this.readMidiHookEvent.bind(this);
     if (!this.state.toggleFocus) {
       this.setState({ toggleFocus: true });
-    }
+    }    
   }
 
   readMidiHookEvent(type, channel, data1, data2) {
