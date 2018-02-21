@@ -1,5 +1,5 @@
-import Evemit from "evemit";
-import { KeyStrokeLib } from "./KeyStrokeLib.js";
+import Evemit from 'evemit';
+import { KeyStrokeLib } from './KeyStrokeLib.js';
 
 let _keyEventEmitter = new Evemit();
 let _xjsObj = {};
@@ -14,13 +14,13 @@ export default class KeyStrokeHandler {
     }
   }
 
-  static preventKeyHandlerEmit(value) {    
-    _preventEmitKeyHandler = value;    
+  static preventKeyHandlerEmit(value) {
+    _preventEmitKeyHandler = value;
   }
 
   static initWithXjsDllHook(xjsObj) {
     _xjsObj = xjsObj;
-    KeyStrokeHandler.removeHookOnRevoke();    
+    KeyStrokeHandler.removeHookOnRevoke();
     if (_xjsObj && _xjsObj.hasOwnProperty('Dll')) {
       let dll = _xjsObj.Dll;
       dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']);
@@ -42,24 +42,28 @@ export default class KeyStrokeHandler {
     }
   }
 
-  static assignHookOnAccessGranted() {  
-    //cleanup first before 
-     KeyStrokeHandler.removeHookOnRevoke();    
-    _xjsObj.Dll.callEx('xsplit.HookUnsubscribe').then(() => {  
-      _xjsObj.Dll.callEx('xsplit.HookSubscribe').then(() => {
+  static assignHookOnAccessGranted() {
+    _xjsObj.Dll
+      .callEx('xsplit.HookSubscribe')
+      .then(() => {
         window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent;
-      }).catch(err => {   
-        KeyStrokeHandler.removeHookOnRevoke();        
+      })
+      .catch(err => {
+        KeyStrokeHandler.removeHookOnRevoke();
         console.error(err.message);
       });
-    }).catch(err => { 
-      KeyStrokeHandler.removeHookOnRevoke();     
-      console.error(err.message);
-    });
   }
 
   static removeHookOnRevoke() {
-    window.OnDllOnInputHookEvent = () => {};
+    _xjsObj.Dll
+      .callEx('xsplit.HookUnsubscribe')
+      .then(() => {
+        window.OnDllOnInputHookEvent = () => {};
+      })
+      .catch(err => {
+        window.OnDllOnInputHookEvent = () => {};
+        console.error(err.message);
+      });
   }
 
   static readHookEvent(msg, wparam, lparam) {
@@ -106,7 +110,7 @@ export default class KeyStrokeHandler {
     let _eventValue = KeyStrokeHandler.detectCombinedKeys();
     _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
     if (_eventValue.event && _eventValue.event !== '') {
-      if(!_preventEmitKeyHandler){
+      if (!_preventEmitKeyHandler) {
         _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
       }
     }
@@ -136,23 +140,23 @@ export default class KeyStrokeHandler {
           _combinedKeysMap.set(KeyStrokeLib.combinedKeyPressed()[key].value, key);
         }
       }
-    }    
+    }
     let _sep = '';
 
-    if(_combinedKeysMap.has('Ctrl')){
+    if (_combinedKeysMap.has('Ctrl')) {
       _activeEvent = _activeEvent + _sep + 'Ctrl';
       _sep = '+';
     }
 
-    if(_combinedKeysMap.has('Shift')){
+    if (_combinedKeysMap.has('Shift')) {
       _activeEvent = _activeEvent + _sep + 'Shift';
       _sep = '+';
     }
 
-    if(_combinedKeysMap.has('Alt')){
+    if (_combinedKeysMap.has('Alt')) {
       _activeEvent = _activeEvent + _sep + 'Alt';
       _sep = '+';
-    }   
+    }
 
     return { event: _activeEvent, sep: _sep };
   }
@@ -162,7 +166,7 @@ export default class KeyStrokeHandler {
     let _wParam = KeyStrokeLib.wParamMap();
     _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
     if (_eventValue.event && _eventValue.event !== '') {
-      if(!_preventEmitKeyHandler){        
+      if (!_preventEmitKeyHandler) {
         _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
       }
     }
@@ -217,7 +221,7 @@ export default class KeyStrokeHandler {
     let _midiMessage = KeyStrokeLib.midiMessageType();
     if (_midiMessage[type]) {
       _midiEvent = _midiMessage[type] + ' ' + channel + ':' + data1;
-      if(!_preventEmitKeyHandler){
+      if (!_preventEmitKeyHandler) {
         _keyEventEmitter.emit(_midiEvent, _midiEvent);
       }
     }

@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import "../../../src/css/XUIKeyStrokes.css";
-import { KeyStrokeLib } from "../lib/KeyStrokeLib.js";
+import React, { Component } from 'react';
+import '../../../src/css/XUIKeyStrokes.css';
+import { KeyStrokeLib } from '../lib/KeyStrokeLib.js';
 
 class XUIKeyStrokes extends Component {
   constructor(props) {
@@ -13,23 +13,23 @@ class XUIKeyStrokes extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onWheel = this.onWheel.bind(this);
-    this.getInputKeyStoke = this.getInputKeyStoke.bind(this);    
+    this.getInputKeyStoke = this.getInputKeyStoke.bind(this);
     this.inputKeyStroke = null;
     this.onBlur = this.onBlur.bind(this);
-    this.onFocus = this.onFocus.bind(this);    
-    this.oldDllMidiChannelMessage = () => {};    
-    this.state = {      
+    this.onFocus = this.onFocus.bind(this);
+    this.oldDllMidiChannelMessage = () => {};
+    this.state = {
       prevKeyDownValue: '',
       toggleFocus: false
     };
   }
 
-  onValueChange(value, dataKey) {        
-    this.inputKeyStroke.value = value;    
+  onValueChange(value, dataKey) {
+    this.inputKeyStroke.value = value;
     this.inputKeyStroke.focus();
   }
 
-  callValueChange() {    
+  callValueChange() {
     // we use to timeout to resolve race-condition bug
     // of the same event for setting hotkeys also triggering the macro
     setTimeout(() => {
@@ -38,26 +38,26 @@ class XUIKeyStrokes extends Component {
     }, 0);
   }
 
-  onBlur() {       
+  onBlur() {
     //option to turn on/off KeyStrokeHandler emitter
-    if(this.props.KeyStrokeHandler) {
+    if (this.props.KeyStrokeHandler) {
       this.props.KeyStrokeHandler.preventKeyHandlerEmit(false);
     }
     window.OnDllMidiChannelMessage = this.oldDllMidiChannelMessage;
-    this.oldDllMidiChannelMessage = {}; 
+    this.oldDllMidiChannelMessage = {};
     this.setState({ toggleFocus: false });
   }
 
-  onFocus() {     
+  onFocus() {
     //option to turn on/off KeyStrokeHandler emitter
-    if(this.props.KeyStrokeHandler) {
+    if (this.props.KeyStrokeHandler) {
       this.props.KeyStrokeHandler.preventKeyHandlerEmit(true);
     }
     this.oldDllMidiChannelMessage = window.OnDllMidiChannelMessage;
     window.OnDllMidiChannelMessage = this.readMidiHookEvent.bind(this);
     if (!this.state.toggleFocus) {
       this.setState({ toggleFocus: true });
-    }    
+    }
   }
 
   readMidiHookEvent(type, channel, data1, data2) {
@@ -123,13 +123,17 @@ class XUIKeyStrokes extends Component {
     }
     let _keyPressed = this.determinePressedKey(event);
     if (_wpParamMap[event.which]) {
-      pressed = _keyPressed.pressed + (KeyStrokeLib.combinedKeyPressed()[event.which] ? '' : _keyPressed.sep + _wpParamMap[event.which]);
+      pressed =
+        _keyPressed.pressed +
+        (KeyStrokeLib.combinedKeyPressed()[event.which]
+          ? ''
+          : _keyPressed.sep + _wpParamMap[event.which]);
       event.target.value = pressed;
       this.onValueChange(pressed, event.target.dataset.key);
     }
   }
 
-  onKeyUp(event) {    
+  onKeyUp(event) {
     event.preventDefault();
     this.setState({ prevKeyDownValue: '' });
     let pressed = '';
@@ -141,25 +145,25 @@ class XUIKeyStrokes extends Component {
       this.onValueChange(pressed, event.target.dataset.key);
     }
     this.callValueChange();
-  }  
+  }
 
   determinePressedKey(event) {
     let pressed = '';
     let sep = '';
     //let _combinedKeys = KeyStrokeLib.combinedKeyPressed();
-    //if (!_combinedKeys[event.which]) {      
-      if (event.ctrlKey) {
-        pressed = 'Ctrl';
-        sep = '+';
-      }
-      if (event.shiftKey) {
-        pressed = pressed + sep + 'Shift';
-        sep = '+';
-      }
-      if (event.altKey) {
-        pressed = pressed + sep + 'Alt';
-        sep = '+';
-      }
+    //if (!_combinedKeys[event.which]) {
+    if (event.ctrlKey) {
+      pressed = 'Ctrl';
+      sep = '+';
+    }
+    if (event.shiftKey) {
+      pressed = pressed + sep + 'Shift';
+      sep = '+';
+    }
+    if (event.altKey) {
+      pressed = pressed + sep + 'Alt';
+      sep = '+';
+    }
     //}
     return { pressed: pressed, sep: sep };
   }
@@ -171,23 +175,21 @@ class XUIKeyStrokes extends Component {
 
   getInputKeyStoke(ref) {
     this.inputKeyStroke = ref;
-  } 
+  }
 
   render() {
     let defaultValue = '';
     let placeHolderText = 'None';
     let thisClass = 'xui-keyStroke';
 
-    if (
-      typeof this.props.placeholderText !== 'undefined' 
-    ) {
+    if (typeof this.props.placeholderText !== 'undefined') {
       placeHolderText = this.props.placeholderText;
-    } 
+    }
 
     if (typeof this.props.value !== 'undefined') {
       defaultValue = this.props.value;
     }
-    
+
     return (
       <div className={thisClass}>
         <input
@@ -204,12 +206,10 @@ class XUIKeyStrokes extends Component {
           onFocus={this.onFocus}
           defaultValue={defaultValue}
         />
-        <button name="delete" 
-          onClick={this.onDeleteClick}           
-        />        
+        <button name="delete" onClick={this.onDeleteClick} />
       </div>
     );
-  } 
+  }
 }
 
 export default XUIKeyStrokes;

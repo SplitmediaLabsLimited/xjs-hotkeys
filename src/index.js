@@ -1,18 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./css/index.css";
-import registerServiceWorker from "./registerServiceWorker";
-import KeyStrokeHandler from "./js/lib/KeyStrokeHandler.js";
-import XUIKeyStrokes from "./js/component/XUIKeyStrokes.js";
-import xjs from "../node_modules/xjs-framework/dist/xjs-es2015.min.js";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './css/index.css';
+import registerServiceWorker from './registerServiceWorker';
+import KeyStrokeHandler from './js/lib/KeyStrokeHandler.js';
+import XUIKeyStrokes from './js/component/XUIKeyStrokes.js';
+import xjs from '../node_modules/xjs-framework/dist/xjs-es2015.min.js';
 
 document.onselectstart = function(event) {
   var nodeName = event.target.nodeName;
-  if (
-    nodeName === "INPUT" ||
-    nodeName === "TEXTAREA" ||
-    event.target.contentEditable === true
-  ) {
+  if (nodeName === 'INPUT' || nodeName === 'TEXTAREA' || event.target.contentEditable === true) {
     return true;
   } else {
     return false;
@@ -21,8 +17,8 @@ document.onselectstart = function(event) {
 
 document.onkeydown = function(event) {
   if (
-    (event.target || event.srcElement).nodeName !== "INPUT" &&
-    (event.target || event.srcElement).nodeName !== "TEXTAREA" &&
+    (event.target || event.srcElement).nodeName !== 'INPUT' &&
+    (event.target || event.srcElement).nodeName !== 'TEXTAREA' &&
     (event.target || event.srcElement).contentEditable !== true
   ) {
     if (event.keyCode === 8) return false;
@@ -33,32 +29,32 @@ document.oncontextmenu = function() {
   return false;
 };
 
-xjs.ready().then(() => {  
+xjs.ready().then(() => {
   KeyStrokeHandler.assignXjs(xjs);
-  KeyStrokeHandler.removeHookOnRevoke();         
 
   let dll = xjs.Dll;
-  dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']);
-  dll.on('access-granted', function() {    
-    KeyStrokeHandler.assignHookOnAccessGranted();
-    KeyStrokeHandler.initMidiHook();
-  });
-
-  dll.on('access-revoked', function() {       
-    KeyStrokeHandler.removeHookOnRevoke();        
-  });
-
-  dll.isAccessGranted().then(function(isGranted) {
-    if (isGranted) {     
+  dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']).then(() => {
+    dll.on('access-granted', () => {
       KeyStrokeHandler.assignHookOnAccessGranted();
       KeyStrokeHandler.initMidiHook();
-    } else {      
-      KeyStrokeHandler.removeHookOnRevoke();      
-    }
-  });  
+    });
+
+    dll.on('access-revoked', () => {
+      KeyStrokeHandler.removeHookOnRevoke();
+    });
+
+    dll.isAccessGranted().then(isGranted => {
+      if (isGranted) {
+        KeyStrokeHandler.assignHookOnAccessGranted();
+        KeyStrokeHandler.initMidiHook();
+      } else {
+        KeyStrokeHandler.removeHookOnRevoke();
+      }
+    });
+  });
 
   let hotKey = obj => {
-    console.log("HotKey: emitted event " + obj);
+    console.log('HotKey: emitted event ' + obj);
   };
 
   let changeFunc = obj => {
@@ -108,7 +104,7 @@ xjs.ready().then(() => {
         <button onClick={clickOn2}>On</button>
         <button onClick={clickOff2}>Off</button>
       </div>,
-      document.getElementById("root")
+      document.getElementById('root')
     );
     registerServiceWorker();
   };
