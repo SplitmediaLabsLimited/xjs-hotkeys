@@ -81,6 +81,7 @@ class XUIKeyStrokes extends Component {
   }
 
   onWheel(event) {
+    if (!this.state.toggleFocus) return;
     event.preventDefault();
     let wheelMove = '';
     let _keyPressed = this.determinePressedKey(event);
