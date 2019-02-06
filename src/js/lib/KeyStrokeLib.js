@@ -117,7 +117,9 @@ const MOUSE_MAP = {
   middle: 'MCenter',
   2: 'MRight',
   right: 'MRight',
-  wheel: 'MWheel'
+  wheel: 'MWheel',
+  3: 'MBack',
+  4: 'MForward'
 };
 
 // hook message constants

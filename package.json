@@ -1,13 +1,13 @@
 {
   "name": "xjs-hotkeys",
   "main": "dist/xjs-hotkeys.bundle.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "evemit": "^1.0.2",
     "node-sass": "^4.5.3",
     "postinstall-build": "^5.0.1",
-    "xjs-framework": "^2.0.5"
+    "xjs-framework": "git://github.com/xjsframework/xjs.git#2.9.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

@@ -62,6 +62,7 @@ class XUIKeyStrokes extends Component {
 
   readMidiHookEvent(type, channel, data1, data2) {
     let _midiEvent = '';
+    console.log('read midi event', type, channel, data1, data2);
     if (Number.isNaN(type) || Number.isNaN(channel) || Number.isNaN(data1) || Number.isNaN(data2)) {
       return;
     }
@@ -101,6 +102,7 @@ class XUIKeyStrokes extends Component {
     let clicked = '';
     let _keyPressed = this.determinePressedKey(event);
     let _mouseMap = KeyStrokeLib.mouseMap();
+    console.log('mouse down', event.button);
     if (_mouseMap[event.button]) {
       clicked = _keyPressed.pressed + _keyPressed.sep + _mouseMap[event.button];
       event.target.value = clicked;
@@ -109,6 +111,7 @@ class XUIKeyStrokes extends Component {
   }
 
   onMouseUp(event) {
+    console.log('mouse up', event.button);
     event.preventDefault();
     this.callValueChange();
   }
@@ -123,6 +126,7 @@ class XUIKeyStrokes extends Component {
       this.setState({ prevKeyDownValue: _wpParamMap[event.which] });
     }
     let _keyPressed = this.determinePressedKey(event);
+    console.log('key down', event.which);
     if (_wpParamMap[event.which]) {
       pressed =
         _keyPressed.pressed +
@@ -136,6 +140,7 @@ class XUIKeyStrokes extends Component {
 
   onKeyUp(event) {
     event.preventDefault();
+    console.log('key up', event.which);
     this.setState({ prevKeyDownValue: '' });
     let pressed = '';
     let _wpParamMap = KeyStrokeLib.wParamMap();

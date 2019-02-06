@@ -23,7 +23,7 @@ export default class KeyStrokeHandler {
     KeyStrokeHandler.removeHookOnRevoke();
     if (_xjsObj && _xjsObj.hasOwnProperty('Dll')) {
       let dll = _xjsObj.Dll;
-      dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']);
+      dll.load(['Scriptdlls\\SplitMediaLabs\\XSplitScriptPluginInternal.dll']);
       dll.on('access-granted', () => {
         KeyStrokeHandler.assignHookOnAccessGranted();
       });
@@ -69,6 +69,8 @@ export default class KeyStrokeHandler {
   static readHookEvent(msg, wparam, lparam) {
     let _hookMessageType = KeyStrokeLib.hookMessageType();
     let _mouseMap = KeyStrokeLib.mouseMap();
+
+    console.log('hook message', msg, parseInt(msg, 10));
 
     //identify message type
     switch (parseInt(msg, 10)) {
@@ -208,7 +210,7 @@ export default class KeyStrokeHandler {
   }
 
   static readMidiHookEvent(type, channel, data1, data2) {
-    let _midiEvent = '';
+    let _midiEvent = '';    
     if (
       Number.isNaN(type) ||
       Number.isNaN(channel) ||
