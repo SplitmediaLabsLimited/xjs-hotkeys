@@ -69,8 +69,7 @@ export default class KeyStrokeHandler {
   static readHookEvent(msg, wparam, lparam) {
     let _hookMessageType = KeyStrokeLib.hookMessageType();
     let _mouseMap = KeyStrokeLib.mouseMap();
-
-    console.log('hook message', msg, parseInt(msg, 10));
+    let _specialMouseButtons = KeyStrokeLib.specialMouseButtons();
 
     //identify message type
     switch (parseInt(msg, 10)) {
@@ -94,6 +93,13 @@ export default class KeyStrokeHandler {
       case _hookMessageType.WM_MOUSEWHEEL:
       case _hookMessageType.WM_MOUSEHWHEEL:
         KeyStrokeHandler.handleMouseScroll(_mouseMap['wheel']);
+        break;
+      case _hookMessageType.WM_XBUTTONUP:
+        if (_specialMouseButtons['MK_XBUTTON1'] === parseInt(wparam, 10)) {
+          KeyStrokeHandler.handleMouseUp(_mouseMap['mback']);
+        } else if (_specialMouseButtons['MK_XBUTTON2'] === parseInt(wparam, 10)) {
+          KeyStrokeHandler.handleMouseUp(_mouseMap['mforward']);
+        }
         break;
       default:
         break;
@@ -210,7 +216,7 @@ export default class KeyStrokeHandler {
   }
 
   static readMidiHookEvent(type, channel, data1, data2) {
-    let _midiEvent = '';    
+    let _midiEvent = '';
     if (
       Number.isNaN(type) ||
       Number.isNaN(channel) ||

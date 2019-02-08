@@ -34,9 +34,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "prettify": "prettier --write \"src/**/*.js\" --single-quote --jsx-bracket-same-line --print-width 100",
     "buildReactScripts": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "build": "webpack --env.production"
+    "build": "npm run prettify&&webpack --env.production"
   }
 }

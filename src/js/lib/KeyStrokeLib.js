@@ -119,7 +119,9 @@ const MOUSE_MAP = {
   right: 'MRight',
   wheel: 'MWheel',
   3: 'MBack',
-  4: 'MForward'
+  mback: 'MBack',
+  4: 'MForward',
+  mforward: 'MForward'
 };
 
 // hook message constants
@@ -136,7 +138,9 @@ const HOOK_MESSAGE_TYPE = {
   WM_RBUTTONDOWN: 0x0204,
   WM_RBUTTONUP: 0x0205,
   WM_MBUTTONDOWN: 0x0207,
-  WM_MBUTTONUP: 0x0208
+  WM_MBUTTONUP: 0x0208,
+  WM_XBUTTONDOWN: 0x020b,
+  WM_XBUTTONUP: 0x020c
 };
 
 //restricted keys
@@ -212,6 +216,12 @@ const MIDI_MESSAGETYPE = {
   14: 'PitchWheel'
 };
 
+//special mouse buttons
+const SPECIAL_MOUSE_BUTTONS = {
+  MK_XBUTTON1: 0x10020,
+  MK_XBUTTON2: 0x20040
+};
+
 let _combinationKeys = {
   160: {
     active: false,
@@ -278,5 +288,9 @@ export class KeyStrokeLib {
 
   static midiMessageType() {
     return MIDI_MESSAGETYPE;
+  }
+
+  static specialMouseButtons() {
+    return SPECIAL_MOUSE_BUTTONS;
   }
 }

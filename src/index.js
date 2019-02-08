@@ -30,10 +30,10 @@ document.oncontextmenu = function() {
 };
 
 xjs.ready().then(() => {
-  KeyStrokeHandler.assignXjs(xjs);
-
   let dll = xjs.Dll;
-  dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']).then(() => {
+  dll.load(['Scriptdlls\\SplitMediaLabs\\XSplitScriptPluginInternal.dll']).then(() => {
+    KeyStrokeHandler.assignXjs(xjs);
+
     dll.on('access-granted', () => {
       KeyStrokeHandler.assignHookOnAccessGranted();
       KeyStrokeHandler.initMidiHook();
