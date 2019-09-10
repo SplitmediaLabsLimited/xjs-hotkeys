@@ -74,11 +74,19 @@ export default class KeyStrokeHandler {
     //identify message type
     switch (parseInt(msg, 10)) {
       case _hookMessageType.WM_KEYDOWN:
+        //console.log('msg', msg, 'WM_KEYDOWN', KeyStrokeLib.wParamMap()[wparam], 'lparam', lparam);
+        KeyStrokeHandler.handleKeydown(wparam, lparam);
+        break;
       case _hookMessageType.WM_SYSKEYDOWN:
+        //console.log('msg', msg, 'WM_SYSKEYDOWN', KeyStrokeLib.wParamMap()[wparam], 'lparam', lparam);
         KeyStrokeHandler.handleKeydown(wparam, lparam);
         break;
       case _hookMessageType.WM_KEYUP:
+        //console.log('msg', msg, 'WM_KEYUP', KeyStrokeLib.wParamMap()[wparam], 'lparam', lparam);
+        KeyStrokeHandler.handleKeyup(wparam, lparam);
+        break;
       case _hookMessageType.WM_SYSKEYUP:
+        //console.log('msg', msg, 'WM_SYSKEYUP', KeyStrokeLib.wParamMap()[wparam], 'lparam', lparam);
         KeyStrokeHandler.handleKeyup(wparam, lparam);
         break;
       case _hookMessageType.WM_LBUTTONUP:
@@ -127,6 +135,8 @@ export default class KeyStrokeHandler {
   static handleKeydown(wparam, lparam) {
     if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = true;
+      //trying for virtual keys
+      KeyStrokeLib.rememberedKeys().set(KeyStrokeLib.combinedKeyPressed()[wparam].value, true);
     }
   }
 
@@ -136,6 +146,9 @@ export default class KeyStrokeHandler {
     }
     if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
       KeyStrokeHandler.processKeyEvent(wparam, lparam);
+      if (!KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
+        KeyStrokeLib.rememberedKeys().clear();
+      }
     }
   }
 
@@ -151,17 +164,17 @@ export default class KeyStrokeHandler {
     }
     let _sep = '';
 
-    if (_combinedKeysMap.has('Ctrl')) {
+    if (_combinedKeysMap.has('Ctrl') || KeyStrokeLib.rememberedKeys().has('Ctrl')) {
       _activeEvent = _activeEvent + _sep + 'Ctrl';
       _sep = '+';
     }
 
-    if (_combinedKeysMap.has('Shift')) {
+    if (_combinedKeysMap.has('Shift') || KeyStrokeLib.rememberedKeys().has('Shift')) {
       _activeEvent = _activeEvent + _sep + 'Shift';
       _sep = '+';
     }
 
-    if (_combinedKeysMap.has('Alt')) {
+    if (_combinedKeysMap.has('Alt') || KeyStrokeLib.rememberedKeys().has('Alt')) {
       _activeEvent = _activeEvent + _sep + 'Alt';
       _sep = '+';
     }

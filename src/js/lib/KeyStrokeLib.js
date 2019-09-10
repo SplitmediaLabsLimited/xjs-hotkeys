@@ -261,6 +261,9 @@ let _combinationKeys = {
   }
 };
 
+//trying for virtual keys
+const _rememberedKeys = new Map();
+
 export class KeyStrokeLib {
   static combinedKeyPressed() {
     return _combinationKeys;
@@ -292,5 +295,10 @@ export class KeyStrokeLib {
 
   static specialMouseButtons() {
     return SPECIAL_MOUSE_BUTTONS;
+  }
+
+  //trying for virtual keys
+  static rememberedKeys() {
+    return _rememberedKeys;
   }
 }
