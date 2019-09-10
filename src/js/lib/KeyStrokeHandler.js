@@ -135,8 +135,14 @@ export default class KeyStrokeHandler {
   static handleKeydown(wparam, lparam) {
     if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = true;
+    } else {
       //trying for virtual keys
-      KeyStrokeLib.rememberedKeys().set(KeyStrokeLib.combinedKeyPressed()[wparam].value, true);
+      Object.keys(KeyStrokeLib.combinedKeyPressed()).forEach(key => {
+        const modifier = KeyStrokeLib.combinedKeyPressed()[key];
+        if (modifier.active) {
+          KeyStrokeLib.rememberedKeys().set(KeyStrokeLib.combinedKeyPressed()[key].value, true);
+        }
+      });
     }
   }
 
