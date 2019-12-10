@@ -7,7 +7,8 @@
     "evemit": "^1.0.2",
     "node-sass": "^4.5.3",
     "postinstall-build": "^5.0.1",
-    "xjs-framework": "git://github.com/xjsframework/xjs.git#2.9.0"
+    "xjs-framework": "git://github.com/xjsframework/xjs.git#2.9.1",
+    "xui_app": "git+https://gitlab.xsplit.com/xsplit-plugins/xui.git#301d99d"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -33,9 +34,11 @@
     "url": "https://github.com/xjsframework/xjs-hotkeys.git"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npm run prettify && react-scripts start",
     "prettify": "prettier --write \"src/**/*.js\" --single-quote --jsx-bracket-same-line --print-width 100",
     "buildReactScripts": "react-scripts build",
+    "createPlg:release": "npm run buildReactScripts && node ./build.js",
+    "createPlg:dev": "npm run buildReactScripts && node ./buildDev.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "build": "npm run prettify&&webpack --env.production"

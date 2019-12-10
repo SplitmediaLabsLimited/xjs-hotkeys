@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/index.css';
-import registerServiceWorker from './registerServiceWorker';
+//import registerServiceWorker from './registerServiceWorker';
 import KeyStrokeHandler from './js/lib/KeyStrokeHandler.js';
 import XUIKeyStrokes from './js/component/XUIKeyStrokes.js';
 import xjs from '../node_modules/xjs-framework/dist/xjs-es2015.min.js';
@@ -106,7 +106,7 @@ xjs.ready().then(() => {
       </div>,
       document.getElementById('root')
     );
-    registerServiceWorker();
+    //registerServiceWorker();
   };
   renderReact();
 });

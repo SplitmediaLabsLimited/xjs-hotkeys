@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<ProperName>XJS Hotkey</ProperName>
+	<Name>xjshotkeyplg</Name>	
+	<RequiresDllPermission>true</RequiresDllPermission>	
+	<MinFxVersion_Dev>3.9.1923.1401</MinFxVersion_Dev>
+  	<Version_Dev>3.9.1924.0901</Version_Dev> 
+  	<MinFxVersion>3.9.1911.1101</MinFxVersion>
+  	<Version>3.9.1912.0901</Version>
+</config>

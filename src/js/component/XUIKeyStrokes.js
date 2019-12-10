@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../../src/css/XUIKeyStrokes.css';
 import { KeyStrokeLib } from '../lib/KeyStrokeLib.js';
+import { deleteHover, deleteFocus } from '../../images/imageLibrary.js';
 
 class XUIKeyStrokes extends Component {
   constructor(props) {
@@ -17,10 +18,16 @@ class XUIKeyStrokes extends Component {
     this.inputKeyStroke = null;
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this);
+    this.onHover = this.onHover.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.buttonOver = this.buttonOver.bind(this);
+    this.buttonOut = this.buttonOut.bind(this);
     this.oldDllMidiChannelMessage = () => {};
     this.state = {
       prevKeyDownValue: '',
-      toggleFocus: false
+      toggleFocus: false,
+      hover: false,
+      buttonHover: false
     };
   }
 
@@ -58,6 +65,30 @@ class XUIKeyStrokes extends Component {
     if (!this.state.toggleFocus) {
       this.setState({ toggleFocus: true });
     }
+  }
+
+  onHover() {
+    this.setState({
+      hover: true
+    });
+  }
+
+  onMouseLeave() {
+    this.setState({
+      hover: false
+    });
+  }
+
+  buttonOver() {
+    this.setState({
+      buttonHover: true
+    });
+  }
+
+  buttonOut() {
+    this.setState({
+      buttonHover: false
+    });
   }
 
   readMidiHookEvent(type, channel, data1, data2) {
@@ -183,6 +214,20 @@ class XUIKeyStrokes extends Component {
     let placeHolderText = 'None';
     let thisClass = 'xui-keyStroke';
 
+    let style = {};
+
+    if (this.state.hover || this.state.toggleFocus) {
+      style = {
+        backgroundImage: `url(${deleteFocus})`
+      };
+    }
+
+    if (this.state.buttonHover) {
+      style = {
+        backgroundImage: `url(${deleteHover})`
+      };
+    }
+
     if (typeof this.props.placeholderText !== 'undefined') {
       placeHolderText = this.props.placeholderText;
     }
@@ -192,7 +237,7 @@ class XUIKeyStrokes extends Component {
     }
 
     return (
-      <div className={thisClass}>
+      <div className={thisClass} onMouseOver={this.onHover} onMouseLeave={this.onMouseLeave}>
         <input
           type="text"
           ref={this.getInputKeyStoke}
@@ -207,7 +252,13 @@ class XUIKeyStrokes extends Component {
           onFocus={this.onFocus}
           defaultValue={defaultValue}
         />
-        <button name="delete" onClick={this.onDeleteClick} />
+        <button
+          name="delete"
+          onClick={this.onDeleteClick}
+          onMouseOver={this.buttonOver}
+          onMouseLeave={this.buttonOut}
+          style={style}
+        />
       </div>
     );
   }

@@ -43,8 +43,7 @@ export default class KeyStrokeHandler {
   }
 
   static assignHookOnAccessGranted() {
-    _xjsObj.Dll
-      .callEx('xsplit.HookSubscribe')
+    _xjsObj.Dll.callEx('xsplit.HookSubscribe')
       .then(() => {
         window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent;
       })
@@ -55,8 +54,7 @@ export default class KeyStrokeHandler {
   }
 
   static removeHookOnRevoke() {
-    _xjsObj.Dll
-      .callEx('xsplit.HookUnsubscribe')
+    _xjsObj.Dll.callEx('xsplit.HookUnsubscribe')
       .then(() => {
         window.OnDllOnInputHookEvent = () => {};
       })
@@ -125,12 +123,14 @@ export default class KeyStrokeHandler {
   }
 
   static handleKeydown(wparam, lparam) {
+    console.log('Keydown', wparam, KeyStrokeLib.wParamMap()[wparam], lparam);
     if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = true;
     }
   }
 
   static handleKeyup(wparam, lparam) {
+    console.log('Keyup', wparam, KeyStrokeLib.wParamMap()[wparam], lparam);
     if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = false;
     }
@@ -182,8 +182,7 @@ export default class KeyStrokeHandler {
 
   //Initialize Midi Devices
   static initMidiHook() {
-    _xjsObj.Dll
-      .call('xsplit.Midi.StartMonitor')
+    _xjsObj.Dll.call('xsplit.Midi.StartMonitor')
       .then(midiClientId => {
         _midiClientId = midiClientId ? midiClientId : '';
         window.OnDllMidiChannelMessage = KeyStrokeHandler.readMidiHookEvent;

@@ -33,12 +33,6 @@
 	background-color: #505050;
 }
 
-.xui-keyStroke input:focus + button[name=delete],
-.xui-keyStroke input:hover + button[name=delete]
-{
-	background-image: url("../images/field-delete-normal.svg");
-}
-
 .xui-keyStroke button[name=delete] {
 	display: inline-block;
 	width: 8px;
@@ -49,10 +43,4 @@
 	padding: 0;
 	outline: none;
 	cursor: pointer;
-}
-
-.xui-keyStroke button[name=delete]:hover,
-.xui-keyStroke input:focus + button[name=delete]:hover
- {	
-	background-image: url("../images/field-delete-hover.svg");	
 }
