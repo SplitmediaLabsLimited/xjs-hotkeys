@@ -1,5 +1,6 @@
 import Evemit from 'evemit';
 import { KeyStrokeLib } from './KeyStrokeLib.js';
+import { execDllExFunc, execDllExSyncFunc } from '../utils/execDllFunc.js';
 
 let _keyEventEmitter = new Evemit();
 let _xjsObj = {};
@@ -23,7 +24,7 @@ export default class KeyStrokeHandler {
     KeyStrokeHandler.removeHookOnRevoke();
     if (_xjsObj && _xjsObj.hasOwnProperty('Dll')) {
       let dll = _xjsObj.Dll;
-      dll.load(['Scriptdlls\\SplitMediaLabs\\XSplitScriptPluginInternal.dll']);
+      dll.load(['Scriptdlls\\SplitMediaLabs\\XjsEx.dll']);
       dll.on('access-granted', () => {
         KeyStrokeHandler.assignHookOnAccessGranted();
       });
@@ -43,10 +44,11 @@ export default class KeyStrokeHandler {
   }
 
   static assignHookOnAccessGranted() {
-    _xjsObj.Dll
-      .callEx('xsplit.HookSubscribe')
-      .then(() => {
-        window.OnDllOnInputHookEvent = KeyStrokeHandler.readHookEvent;
+    execDllExFunc('XSplit.Hook.GetThreadId')
+      .then(threadId => {
+        execDllExSyncFunc('XSplit.System.HotkeysHookAddThread', threadId);
+        execDllExSyncFunc('XSplit.Hook.Subscribe');
+        window.OnDllOnInputHookEventEx = KeyStrokeHandler.readHookEvent;
       })
       .catch(err => {
         KeyStrokeHandler.removeHookOnRevoke();
@@ -55,18 +57,11 @@ export default class KeyStrokeHandler {
   }
 
   static removeHookOnRevoke() {
-    _xjsObj.Dll
-      .callEx('xsplit.HookUnsubscribe')
-      .then(() => {
-        window.OnDllOnInputHookEvent = () => {};
-      })
-      .catch(err => {
-        window.OnDllOnInputHookEvent = () => {};
-        console.error(err.message);
-      });
+    execDllExSyncFunc('XSplit.Hook.Unsubscribe');
+    window.OnDllOnInputHookEventEx = () => {};
   }
 
-  static readHookEvent(msg, wparam, lparam) {
+  static readHookEvent(wnd, msg, wparam, lparam) {
     let _hookMessageType = KeyStrokeLib.hookMessageType();
     let _mouseMap = KeyStrokeLib.mouseMap();
     let _specialMouseButtons = KeyStrokeLib.specialMouseButtons();
@@ -182,8 +177,7 @@ export default class KeyStrokeHandler {
 
   //Initialize Midi Devices
   static initMidiHook() {
-    _xjsObj.Dll
-      .call('xsplit.Midi.StartMonitor')
+    _xjsObj.Dll.call('xsplit.Midi.StartMonitor')
       .then(midiClientId => {
         _midiClientId = midiClientId ? midiClientId : '';
         window.OnDllMidiChannelMessage = KeyStrokeHandler.readMidiHookEvent;
