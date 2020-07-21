@@ -39,6 +39,6 @@
     "buildReactScripts": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "build": "npm run prettify&&webpack --env.production"
+    "build": "npm run prettify && webpack --env.production"
   }
 }
