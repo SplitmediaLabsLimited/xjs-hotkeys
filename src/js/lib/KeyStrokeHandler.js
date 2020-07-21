@@ -47,7 +47,7 @@ export default class KeyStrokeHandler {
     execDllExFunc('XSplit.Hook.GetThreadId')
       .then(threadId => {
         execDllExSyncFunc('XSplit.System.HotkeysHookAddThread', threadId);
-        execDllExSyncFunc('XSplit.Hook.Subscribe', 'keybd,mouse,input');
+        execDllExSyncFunc('XSplit.Hook.Subscribe', 'keybd,mouse');
         window.OnDllOnInputHookEventEx = KeyStrokeHandler.readHookEvent;
       })
       .catch(err => {
