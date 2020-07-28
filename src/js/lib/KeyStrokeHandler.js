@@ -91,6 +91,15 @@ export default class KeyStrokeHandler {
       case _hookMessageType.WM_MBUTTONUP:
         KeyStrokeHandler.handleMouseUp(_mouseMap['middle']);
         break;
+      case _hookMessageType.WM_LBUTTONDOWN:
+        KeyStrokeHandler.handleMouseDown(_mouseMap['left']);
+        break;
+      case _hookMessageType.WM_RBUTTONDOWN:
+        KeyStrokeHandler.handleMouseDown(_mouseMap['right']);
+        break;
+      case _hookMessageType.WM_MBUTTONDOWN:
+        KeyStrokeHandler.handleMouseDown(_mouseMap['middle']);
+        break;
       case _hookMessageType.WM_MOUSEWHEEL:
       case _hookMessageType.WM_MOUSEHWHEEL:
         KeyStrokeHandler.handleMouseScroll(_mouseMap['wheel']);
@@ -108,16 +117,26 @@ export default class KeyStrokeHandler {
   }
 
   static handleMouseScroll(mouseEvent) {
-    KeyStrokeHandler.processMouseEvent(mouseEvent);
+    KeyStrokeHandler.processMouseEvent(mouseEvent, false);
   }
 
   static handleMouseUp(mouseEvent) {
-    KeyStrokeHandler.processMouseEvent(mouseEvent);
+    KeyStrokeHandler.processMouseEvent(mouseEvent, false);
   }
 
-  static processMouseEvent(mouseEvent) {
+  static handleMouseDown(mouseEvent) {
+    KeyStrokeHandler.processMouseEvent(mouseEvent, true);
+  }
+
+  static processMouseEvent(mouseEvent, isMouseDown) {
     let _eventValue = KeyStrokeHandler.detectCombinedKeys();
-    _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
+
+    if (isMouseDown) {
+      _eventValue.event = `${_eventValue.event}${_eventValue.sep}${mouseEvent}+DOWN`;
+    } else {
+      _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
+    }
+
     if (_eventValue.event && _eventValue.event !== '') {
       if (!_preventEmitKeyHandler) {
         _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
@@ -173,11 +192,11 @@ export default class KeyStrokeHandler {
     return { event: _activeEvent, sep: _sep };
   }
 
-  static processKeyEvent(wparam, lparam, keyDown) {
+  static processKeyEvent(wparam, lparam, isKeyDown) {
     let _eventValue = KeyStrokeHandler.detectCombinedKeys();
     let _wParam = KeyStrokeLib.wParamMap();
 
-    if (keyDown) {
+    if (isKeyDown) {
       if (_eventValue.event.indexOf(_wParam[wparam]) > -1) {
         _eventValue.event = `${_eventValue.event}+DOWN`;
       } else {
@@ -186,8 +205,6 @@ export default class KeyStrokeHandler {
     } else {
       _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
     }
-
-    console.log('_eventValue.event', _eventValue.event);
 
     if (_eventValue.event && _eventValue.event !== '') {
       if (!_preventEmitKeyHandler) {
