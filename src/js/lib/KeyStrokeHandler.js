@@ -7,6 +7,7 @@ let _xjsObj = {};
 let _midiClientId = '';
 let _preventEmitKeyHandler = false;
 let _previousKey = null;
+const _DOWN_INDICATOR = '+DOWN';
 
 export default class KeyStrokeHandler {
   static assignXjs(xjsObj) {
@@ -111,6 +112,13 @@ export default class KeyStrokeHandler {
           KeyStrokeHandler.handleMouseUp(_mouseMap['mforward']);
         }
         break;
+      case _hookMessageType.WM_XBUTTONDOWN:
+        if (_specialMouseButtons['MK_XBUTTON1'] === parseInt(wparam, 10)) {
+          KeyStrokeHandler.handleMouseDown(_mouseMap['mback']);
+        } else if (_specialMouseButtons['MK_XBUTTON2'] === parseInt(wparam, 10)) {
+          KeyStrokeHandler.handleMouseDown(_mouseMap['mforward']);
+        }
+        break;
       default:
         break;
     }
@@ -132,7 +140,7 @@ export default class KeyStrokeHandler {
     let _eventValue = KeyStrokeHandler.detectCombinedKeys();
 
     if (isMouseDown) {
-      _eventValue.event = `${_eventValue.event}${_eventValue.sep}${mouseEvent}+DOWN`;
+      _eventValue.event = `${_eventValue.event}${_eventValue.sep}${mouseEvent}${_DOWN_INDICATOR}`;
     } else {
       _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
     }
@@ -198,9 +206,9 @@ export default class KeyStrokeHandler {
 
     if (isKeyDown) {
       if (_eventValue.event.indexOf(_wParam[wparam]) > -1) {
-        _eventValue.event = `${_eventValue.event}+DOWN`;
+        _eventValue.event = `${_eventValue.event}${_DOWN_INDICATOR}`;
       } else {
-        _eventValue.event = `${_eventValue.event}${_eventValue.sep}${_wParam[wparam]}+DOWN`;
+        _eventValue.event = `${_eventValue.event}${_eventValue.sep}${_wParam[wparam]}${_DOWN_INDICATOR}`;
       }
     } else {
       _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
@@ -281,14 +289,14 @@ export default class KeyStrokeHandler {
 
   static onDown(event, handler) {
     if (event && event !== '' && event !== 'None') {
-      event = `${event}+DOWN`;
+      event = `${event}${_DOWN_INDICATOR}`;
       _keyEventEmitter.on(event, handler);
     }
   }
 
   static offDown(event, handler) {
     if (event && event !== '' && event !== 'None') {
-      event = `${event}+DOWN`;
+      event = `${event}${_DOWN_INDICATOR}`;
       _keyEventEmitter.off(event, handler);
     }
   }
