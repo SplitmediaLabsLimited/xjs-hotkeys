@@ -6,6 +6,7 @@ let _keyEventEmitter = new Evemit();
 let _xjsObj = {};
 let _midiClientId = '';
 let _preventEmitKeyHandler = false;
+let _previousKey = null;
 
 export default class KeyStrokeHandler {
   static assignXjs(xjsObj) {
@@ -69,11 +70,16 @@ export default class KeyStrokeHandler {
     //identify message type
     switch (parseInt(msg, 10)) {
       case _hookMessageType.WM_KEYDOWN:
-      case _hookMessageType.WM_SYSKEYDOWN:
+      case _hookMessageType.WM_SYSKEYDOWN: {
+        const _combinedKey = KeyStrokeLib.combinedKeyPressed()[wparam];
+        if (wparam === _previousKey || (_combinedKey && _combinedKey.active)) return;
+        if ('AltCtrlShift'.indexOf(KeyStrokeLib.wParamMap()[wparam]) < 0) _previousKey = wparam;
         KeyStrokeHandler.handleKeydown(wparam, lparam);
         break;
+      }
       case _hookMessageType.WM_KEYUP:
       case _hookMessageType.WM_SYSKEYUP:
+        if (wparam === _previousKey) _previousKey = null;
         KeyStrokeHandler.handleKeyup(wparam, lparam);
         break;
       case _hookMessageType.WM_LBUTTONUP:
@@ -123,6 +129,9 @@ export default class KeyStrokeHandler {
     if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = true;
     }
+    if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
+      KeyStrokeHandler.processKeyEvent(wparam, lparam, true);
+    }
   }
 
   static handleKeyup(wparam, lparam) {
@@ -130,7 +139,7 @@ export default class KeyStrokeHandler {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = false;
     }
     if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
-      KeyStrokeHandler.processKeyEvent(wparam, lparam);
+      KeyStrokeHandler.processKeyEvent(wparam, lparam, false);
     }
   }
 
@@ -164,10 +173,22 @@ export default class KeyStrokeHandler {
     return { event: _activeEvent, sep: _sep };
   }
 
-  static processKeyEvent(wparam, lparam) {
+  static processKeyEvent(wparam, lparam, keyDown) {
     let _eventValue = KeyStrokeHandler.detectCombinedKeys();
     let _wParam = KeyStrokeLib.wParamMap();
-    _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
+
+    if (keyDown) {
+      if (_eventValue.event.indexOf(_wParam[wparam]) > -1) {
+        _eventValue.event = `${_eventValue.event}+DOWN`;
+      } else {
+        _eventValue.event = `${_eventValue.event}${_eventValue.sep}${_wParam[wparam]}+DOWN`;
+      }
+    } else {
+      _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
+    }
+
+    console.log('_eventValue.event', _eventValue.event);
+
     if (_eventValue.event && _eventValue.event !== '') {
       if (!_preventEmitKeyHandler) {
         _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
@@ -237,6 +258,20 @@ export default class KeyStrokeHandler {
 
   static off(event, handler) {
     if (event && event !== '' && event !== 'None') {
+      _keyEventEmitter.off(event, handler);
+    }
+  }
+
+  static onDown(event, handler) {
+    if (event && event !== '' && event !== 'None') {
+      event = `${event}+DOWN`;
+      _keyEventEmitter.on(event, handler);
+    }
+  }
+
+  static offDown(event, handler) {
+    if (event && event !== '' && event !== 'None') {
+      event = `${event}+DOWN`;
       _keyEventEmitter.off(event, handler);
     }
   }
