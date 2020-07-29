@@ -54,7 +54,7 @@ xjs.ready().then(() => {
   });
 
   let hotKey = obj => {
-    console.log('HotKey: emitted event ' + obj);
+    console.log('HOTKEY: emitted event ' + obj);
   };
 
   let changeFunc = obj => {
@@ -73,12 +73,12 @@ xjs.ready().then(() => {
 
   let clickOn2 = () => {
     let input = document.querySelectorAll('[data-key="keyStroke2"]')[0];
-    KeyStrokeHandler.on(input.value, hotKey);
+    KeyStrokeHandler.onDown(input.value, hotKey);
   };
 
   let clickOff2 = () => {
     let input = document.querySelectorAll('[data-key="keyStroke2"]')[0];
-    KeyStrokeHandler.off(input.value, hotKey);
+    KeyStrokeHandler.offDown(input.value, hotKey);
   };
 
   let renderReact = () => {
@@ -101,8 +101,8 @@ xjs.ready().then(() => {
           onInitialization={changeFunc}
           KeyStrokeHandler={KeyStrokeHandler}
         />
-        <button onClick={clickOn2}>On</button>
-        <button onClick={clickOff2}>Off</button>
+        <button onClick={clickOn2}>On Down</button>
+        <button onClick={clickOff2}>Off Down</button>
       </div>,
       document.getElementById('root')
     );

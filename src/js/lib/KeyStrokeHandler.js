@@ -6,6 +6,8 @@ let _keyEventEmitter = new Evemit();
 let _xjsObj = {};
 let _midiClientId = '';
 let _preventEmitKeyHandler = false;
+let _previousKey = null;
+const _DOWN_INDICATOR = '+DOWN';
 
 export default class KeyStrokeHandler {
   static assignXjs(xjsObj) {
@@ -69,11 +71,16 @@ export default class KeyStrokeHandler {
     //identify message type
     switch (parseInt(msg, 10)) {
       case _hookMessageType.WM_KEYDOWN:
-      case _hookMessageType.WM_SYSKEYDOWN:
+      case _hookMessageType.WM_SYSKEYDOWN: {
+        const _combinedKey = KeyStrokeLib.combinedKeyPressed()[wparam];
+        if (wparam === _previousKey || (_combinedKey && _combinedKey.active)) return;
+        if (!KeyStrokeLib.combinedKeyPressed()[wparam]) _previousKey = wparam;
         KeyStrokeHandler.handleKeydown(wparam, lparam);
         break;
+      }
       case _hookMessageType.WM_KEYUP:
       case _hookMessageType.WM_SYSKEYUP:
+        if (wparam === _previousKey) _previousKey = null;
         KeyStrokeHandler.handleKeyup(wparam, lparam);
         break;
       case _hookMessageType.WM_LBUTTONUP:
@@ -84,6 +91,15 @@ export default class KeyStrokeHandler {
         break;
       case _hookMessageType.WM_MBUTTONUP:
         KeyStrokeHandler.handleMouseUp(_mouseMap['middle']);
+        break;
+      case _hookMessageType.WM_LBUTTONDOWN:
+        KeyStrokeHandler.handleMouseDown(_mouseMap['left']);
+        break;
+      case _hookMessageType.WM_RBUTTONDOWN:
+        KeyStrokeHandler.handleMouseDown(_mouseMap['right']);
+        break;
+      case _hookMessageType.WM_MBUTTONDOWN:
+        KeyStrokeHandler.handleMouseDown(_mouseMap['middle']);
         break;
       case _hookMessageType.WM_MOUSEWHEEL:
       case _hookMessageType.WM_MOUSEHWHEEL:
@@ -96,22 +112,39 @@ export default class KeyStrokeHandler {
           KeyStrokeHandler.handleMouseUp(_mouseMap['mforward']);
         }
         break;
+      case _hookMessageType.WM_XBUTTONDOWN:
+        if (_specialMouseButtons['MK_XBUTTON1'] === parseInt(wparam, 10)) {
+          KeyStrokeHandler.handleMouseDown(_mouseMap['mback']);
+        } else if (_specialMouseButtons['MK_XBUTTON2'] === parseInt(wparam, 10)) {
+          KeyStrokeHandler.handleMouseDown(_mouseMap['mforward']);
+        }
+        break;
       default:
         break;
     }
   }
 
   static handleMouseScroll(mouseEvent) {
-    KeyStrokeHandler.processMouseEvent(mouseEvent);
+    KeyStrokeHandler.processMouseEvent(mouseEvent, false);
   }
 
   static handleMouseUp(mouseEvent) {
-    KeyStrokeHandler.processMouseEvent(mouseEvent);
+    KeyStrokeHandler.processMouseEvent(mouseEvent, false);
   }
 
-  static processMouseEvent(mouseEvent) {
+  static handleMouseDown(mouseEvent) {
+    KeyStrokeHandler.processMouseEvent(mouseEvent, true);
+  }
+
+  static processMouseEvent(mouseEvent, isMouseDown) {
     let _eventValue = KeyStrokeHandler.detectCombinedKeys();
-    _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
+
+    if (isMouseDown) {
+      _eventValue.event = `${_eventValue.event}${_eventValue.sep}${mouseEvent}${_DOWN_INDICATOR}`;
+    } else {
+      _eventValue.event = _eventValue.event + _eventValue.sep + mouseEvent;
+    }
+
     if (_eventValue.event && _eventValue.event !== '') {
       if (!_preventEmitKeyHandler) {
         _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
@@ -123,6 +156,9 @@ export default class KeyStrokeHandler {
     if (KeyStrokeLib.combinedKeyPressed().hasOwnProperty(wparam)) {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = true;
     }
+    if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
+      KeyStrokeHandler.processKeyEvent(wparam, lparam, true);
+    }
   }
 
   static handleKeyup(wparam, lparam) {
@@ -130,7 +166,7 @@ export default class KeyStrokeHandler {
       KeyStrokeLib.combinedKeyPressed()[wparam].active = false;
     }
     if (KeyStrokeLib.wParamMap().hasOwnProperty(wparam)) {
-      KeyStrokeHandler.processKeyEvent(wparam, lparam);
+      KeyStrokeHandler.processKeyEvent(wparam, lparam, false);
     }
   }
 
@@ -164,10 +200,20 @@ export default class KeyStrokeHandler {
     return { event: _activeEvent, sep: _sep };
   }
 
-  static processKeyEvent(wparam, lparam) {
+  static processKeyEvent(wparam, lparam, isKeyDown) {
     let _eventValue = KeyStrokeHandler.detectCombinedKeys();
     let _wParam = KeyStrokeLib.wParamMap();
-    _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
+
+    if (isKeyDown) {
+      if (KeyStrokeLib.combinedKeyPressed()[wparam]) {
+        _eventValue.event = `${_eventValue.event}${_DOWN_INDICATOR}`;
+      } else {
+        _eventValue.event = `${_eventValue.event}${_eventValue.sep}${_wParam[wparam]}${_DOWN_INDICATOR}`;
+      }
+    } else {
+      _eventValue.event = _eventValue.event + _eventValue.sep + _wParam[wparam];
+    }
+
     if (_eventValue.event && _eventValue.event !== '') {
       if (!_preventEmitKeyHandler) {
         _keyEventEmitter.emit(_eventValue.event, _eventValue.event);
@@ -210,20 +256,17 @@ export default class KeyStrokeHandler {
   }
 
   static readMidiHookEvent(type, channel, data1, data2) {
-    let _midiEvent = '';
-    if (
-      Number.isNaN(type) ||
-      Number.isNaN(channel) ||
-      Number.isNaN(data1) ||
-      Number.isNaN(data2) ||
-      0 !== parseInt(data2, 10)
-    ) {
+    if (Number.isNaN(type) || Number.isNaN(channel) || Number.isNaN(data1) || Number.isNaN(data2)) {
       return;
     }
+
+    const isKeyDown = 0 !== parseInt(data2, 10);
+
     let _midiMessage = KeyStrokeLib.midiMessageType();
     if (_midiMessage[type]) {
-      _midiEvent = _midiMessage[type] + ' ' + channel + ':' + data1;
+      let _midiEvent = _midiMessage[type] + ' ' + channel + ':' + data1;
       if (!_preventEmitKeyHandler) {
+        if (isKeyDown) _midiEvent = `${_midiEvent}${_DOWN_INDICATOR}`;
         _keyEventEmitter.emit(_midiEvent, _midiEvent);
       }
     }
@@ -237,6 +280,20 @@ export default class KeyStrokeHandler {
 
   static off(event, handler) {
     if (event && event !== '' && event !== 'None') {
+      _keyEventEmitter.off(event, handler);
+    }
+  }
+
+  static onDown(event, handler) {
+    if (event && event !== '' && event !== 'None') {
+      event = `${event}${_DOWN_INDICATOR}`;
+      _keyEventEmitter.on(event, handler);
+    }
+  }
+
+  static offDown(event, handler) {
+    if (event && event !== '' && event !== 'None') {
+      event = `${event}${_DOWN_INDICATOR}`;
       _keyEventEmitter.off(event, handler);
     }
   }
