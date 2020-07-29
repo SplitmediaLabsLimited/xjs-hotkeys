@@ -22,10 +22,16 @@ preventKeyHandlerEmit(value)
   - option to prevent KeyStrokeHandler to emit midi/keyStrokes
 
 on(event, handler)
-  - sets emitter for the event.
+  - sets emitter for key up event.
 
 off(event, handler)
-- removes emitter for the event.
+  - removes emitter for key up event.
+
+onDown(event, handler)
+  - sets emitter for key up event.
+
+offDown(event, handler)
+  - removes emitter for key up event.
 
 ### XUIKeyStrokes
 - a react component to accept and display key and midi strokes.
