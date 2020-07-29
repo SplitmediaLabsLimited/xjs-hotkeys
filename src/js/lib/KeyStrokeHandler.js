@@ -74,7 +74,7 @@ export default class KeyStrokeHandler {
       case _hookMessageType.WM_SYSKEYDOWN: {
         const _combinedKey = KeyStrokeLib.combinedKeyPressed()[wparam];
         if (wparam === _previousKey || (_combinedKey && _combinedKey.active)) return;
-        if ('AltCtrlShift'.indexOf(KeyStrokeLib.wParamMap()[wparam]) < 0) _previousKey = wparam;
+        if (!KeyStrokeLib.combinedKeyPressed()[wparam]) _previousKey = wparam;
         KeyStrokeHandler.handleKeydown(wparam, lparam);
         break;
       }
@@ -205,7 +205,7 @@ export default class KeyStrokeHandler {
     let _wParam = KeyStrokeLib.wParamMap();
 
     if (isKeyDown) {
-      if (_eventValue.event.indexOf(_wParam[wparam]) > -1) {
+      if (KeyStrokeLib.combinedKeyPressed()[wparam]) {
         _eventValue.event = `${_eventValue.event}${_DOWN_INDICATOR}`;
       } else {
         _eventValue.event = `${_eventValue.event}${_eventValue.sep}${_wParam[wparam]}${_DOWN_INDICATOR}`;
