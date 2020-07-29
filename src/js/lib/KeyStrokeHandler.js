@@ -6,7 +6,7 @@ let _keyEventEmitter = new Evemit();
 let _xjsObj = {};
 let _midiClientId = '';
 let _preventEmitKeyHandler = false;
-let _previousKey = null;
+let _previousKey = new Map();
 const _DOWN_INDICATOR = '+DOWN';
 
 export default class KeyStrokeHandler {
@@ -73,14 +73,14 @@ export default class KeyStrokeHandler {
       case _hookMessageType.WM_KEYDOWN:
       case _hookMessageType.WM_SYSKEYDOWN: {
         const _combinedKey = KeyStrokeLib.combinedKeyPressed()[wparam];
-        if (wparam === _previousKey || (_combinedKey && _combinedKey.active)) return;
-        if (!KeyStrokeLib.combinedKeyPressed()[wparam]) _previousKey = wparam;
+        if (_previousKey.has(wparam) || (_combinedKey && _combinedKey.active)) return;
+        if (!KeyStrokeLib.combinedKeyPressed()[wparam]) _previousKey.set(wparam, wparam);
         KeyStrokeHandler.handleKeydown(wparam, lparam);
         break;
       }
       case _hookMessageType.WM_KEYUP:
       case _hookMessageType.WM_SYSKEYUP:
-        if (wparam === _previousKey) _previousKey = null;
+        if (_previousKey.has(wparam)) _previousKey.delete(wparam);
         KeyStrokeHandler.handleKeyup(wparam, lparam);
         break;
       case _hookMessageType.WM_LBUTTONUP:
