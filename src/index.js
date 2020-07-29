@@ -71,12 +71,32 @@ xjs.ready().then(() => {
     KeyStrokeHandler.off(input.value, hotKey);
   };
 
-  let clickOn2 = () => {
+  let clickDown = () => {
+    let input = document.querySelectorAll('[data-key="keyStroke1"]')[0];
+    KeyStrokeHandler.onDown(input.value, hotKey);
+  };
+
+  let clickDownOff = () => {
+    let input = document.querySelectorAll('[data-key="keyStroke1"]')[0];
+    KeyStrokeHandler.offDown(input.value, hotKey);
+  };
+
+  let clickOn1 = () => {
+    let input = document.querySelectorAll('[data-key="keyStroke2"]')[0];
+    KeyStrokeHandler.on(input.value, hotKey);
+  };
+
+  let clickOff1 = () => {
+    let input = document.querySelectorAll('[data-key="keyStroke2"]')[0];
+    KeyStrokeHandler.off(input.value, hotKey);
+  };
+
+  let clickDown1 = () => {
     let input = document.querySelectorAll('[data-key="keyStroke2"]')[0];
     KeyStrokeHandler.onDown(input.value, hotKey);
   };
 
-  let clickOff2 = () => {
+  let clickDownOff1 = () => {
     let input = document.querySelectorAll('[data-key="keyStroke2"]')[0];
     KeyStrokeHandler.offDown(input.value, hotKey);
   };
@@ -93,6 +113,8 @@ xjs.ready().then(() => {
         />
         <button onClick={clickOn}>On</button>
         <button onClick={clickOff}>Off</button>
+        <button onClick={clickDown}>On DOWN</button>
+        <button onClick={clickDownOff}>Off DOWN</button>
         <br />
         <XUIKeyStrokes
           placeholderText="None"
@@ -101,8 +123,10 @@ xjs.ready().then(() => {
           onInitialization={changeFunc}
           KeyStrokeHandler={KeyStrokeHandler}
         />
-        <button onClick={clickOn2}>On Down</button>
-        <button onClick={clickOff2}>Off Down</button>
+        <button onClick={clickOn1}>On</button>
+        <button onClick={clickOff1}>Off</button>
+        <button onClick={clickDown1}>On DOWN</button>
+        <button onClick={clickDownOff1}>Off DOWN</button>
       </div>,
       document.getElementById('root')
     );
