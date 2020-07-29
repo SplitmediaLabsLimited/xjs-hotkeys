@@ -54,7 +54,7 @@ xjs.ready().then(() => {
   });
 
   let hotKey = obj => {
-    console.log('HotKey: emitted event ' + obj);
+    console.log('HOTKEY: emitted event ' + obj);
   };
 
   let changeFunc = obj => {

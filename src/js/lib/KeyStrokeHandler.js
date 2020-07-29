@@ -256,20 +256,17 @@ export default class KeyStrokeHandler {
   }
 
   static readMidiHookEvent(type, channel, data1, data2) {
-    let _midiEvent = '';
-    if (
-      Number.isNaN(type) ||
-      Number.isNaN(channel) ||
-      Number.isNaN(data1) ||
-      Number.isNaN(data2) ||
-      0 !== parseInt(data2, 10)
-    ) {
+    if (Number.isNaN(type) || Number.isNaN(channel) || Number.isNaN(data1) || Number.isNaN(data2)) {
       return;
     }
+
+    const isKeyDown = 0 !== parseInt(data2, 10);
+
     let _midiMessage = KeyStrokeLib.midiMessageType();
     if (_midiMessage[type]) {
-      _midiEvent = _midiMessage[type] + ' ' + channel + ':' + data1;
+      let _midiEvent = _midiMessage[type] + ' ' + channel + ':' + data1;
       if (!_preventEmitKeyHandler) {
+        if (isKeyDown) _midiEvent = `${_midiEvent}${_DOWN_INDICATOR}`;
         _keyEventEmitter.emit(_midiEvent, _midiEvent);
       }
     }
