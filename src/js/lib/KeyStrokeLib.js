@@ -219,7 +219,9 @@ const MIDI_MESSAGETYPE = {
 //special mouse buttons
 const SPECIAL_MOUSE_BUTTONS = {
   MK_XBUTTON1: 65536,
-  MK_XBUTTON2: 131072
+  MK_XBUTTON1_MAX: 65548,
+  MK_XBUTTON2: 131072,
+  MK_XBUTTON2_MAX: 131084
 };
 
 let _combinationKeys = {

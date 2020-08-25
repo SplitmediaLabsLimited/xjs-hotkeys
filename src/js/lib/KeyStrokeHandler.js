@@ -106,16 +106,28 @@ export default class KeyStrokeHandler {
         KeyStrokeHandler.handleMouseScroll(_mouseMap['wheel']);
         break;
       case _hookMessageType.WM_XBUTTONUP:
-        if (_specialMouseButtons['MK_XBUTTON1'] === parseInt(wparam, 10)) {
+        if (
+          parseInt(wparam, 10) >= _specialMouseButtons['MK_XBUTTON1'] &&
+          parseInt(wparam, 10) <= _specialMouseButtons['MK_XBUTTON1_MAX']
+        ) {
           KeyStrokeHandler.handleMouseUp(_mouseMap['mback']);
-        } else if (_specialMouseButtons['MK_XBUTTON2'] === parseInt(wparam, 10)) {
+        } else if (
+          parseInt(wparam, 10) >= _specialMouseButtons['MK_XBUTTON2'] &&
+          parseInt(wparam, 10) <= _specialMouseButtons['MK_XBUTTON2_MAX']
+        ) {
           KeyStrokeHandler.handleMouseUp(_mouseMap['mforward']);
         }
         break;
       case _hookMessageType.WM_XBUTTONDOWN:
-        if (_specialMouseButtons['MK_XBUTTON1'] === parseInt(wparam, 10)) {
+        if (
+          parseInt(wparam, 10) >= _specialMouseButtons['MK_XBUTTON1'] &&
+          parseInt(wparam, 10) <= _specialMouseButtons['MK_XBUTTON1_MAX']
+        ) {
           KeyStrokeHandler.handleMouseDown(_mouseMap['mback']);
-        } else if (_specialMouseButtons['MK_XBUTTON2'] === parseInt(wparam, 10)) {
+        } else if (
+          parseInt(wparam, 10) >= _specialMouseButtons['MK_XBUTTON2'] &&
+          parseInt(wparam, 10) <= _specialMouseButtons['MK_XBUTTON2_MAX']
+        ) {
           KeyStrokeHandler.handleMouseDown(_mouseMap['mforward']);
         }
         break;
