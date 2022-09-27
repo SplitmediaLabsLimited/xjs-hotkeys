@@ -7,7 +7,7 @@
     "evemit": "^1.0.2",
     "node-sass": "^4.14.1",
     "postinstall-build": "^5.0.1",
-    "xjs-framework": "git://github.com/xjsframework/xjs.git#2.9.2"
+    "xjs-framework": "git+https://github.com/xjsframework/xjs.git#2.11.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
