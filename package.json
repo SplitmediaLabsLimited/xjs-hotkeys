@@ -6,7 +6,7 @@
   "dependencies": {
     "css-what": "^5.0.1",
     "evemit": "^1.0.2",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "postinstall-build": "^5.0.1",
     "xjs-framework": "git://github.com/xjsframework/xjs.git#2.9.2"
   },
