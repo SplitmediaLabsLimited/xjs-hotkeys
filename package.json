@@ -4,6 +4,7 @@
   "version": "0.1.1",
   "private": true,
   "dependencies": {
+    "css-what": "^5.0.1",
     "evemit": "^1.0.2",
     "node-sass": "^4.14.1",
     "postinstall-build": "^5.0.1",
@@ -40,5 +41,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "build": "npm run prettify && webpack --env.production"
+  },
+  "resolution": {
+    "css-what": "5.0.1"
   }
 }
