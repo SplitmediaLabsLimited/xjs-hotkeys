@@ -3,7 +3,25 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 # xui-keystrokes
 
 This is a small library for handling key and midi strokes specifically for Xsplit Broadcaster.
-There is a postinstall script that generates a production build for distribution or manually invoke using command "webpack --env.production".
+
+Build the library with `yarn build` (Webpack production bundle in `dist/`). Run the demo with `yarn start`.
+
+## Local xjs dependency
+
+The demo app imports `@splitmedialabs/xjs` as a dev dependency. By default it uses the packaged npm release (`^2.14.0`). To test against a sibling `../xjs` checkout:
+
+```powershell
+yarn deps:local
+yarn start
+```
+
+Switch back to the npm package:
+
+```powershell
+yarn deps:packaged
+```
+
+Check the current mode with `yarn deps:status`. Packaged version pins live in `scripts/switch-local-deps.config.js`.
 
 ### KeyStrokeHandler object needs xjs to fully function.
 - most methods of the class are static
@@ -38,17 +56,22 @@ offDown(event, handler)
 
 ### Example usage
 
-#### package.json
+#### package.json (Macros consumer example)
+
+Use `yarn deps:local` in macro-executor, or declare portal links manually:
+
 ```
-"xjs-hotkeys": "git+https://github.com/xjsframework/xjs-hotkeys.git",
-"xjs-framework": "git+https://github.com/xjsframework/xjs.git"
+"xjs-hotkeys": "portal:../xjs-hotkeys",
+"@splitmedialabs/xjs": "portal:../xjs"
 ```
+
+For packaged installs, Macros defaults to npm xjs plus the `#MACROS` git branch of xjs-hotkeys.
 
 #### sample.js
 ```
 import React from "react";
 import ReactDOM from "react-dom";
-import xjs from '../node_modules/xjs-framework/dist/xjs-es2015.min.js';
+import xjs from '@splitmedialabs/xjs/dist/xjs-es2015.min.js';
 import { KeyStrokeHandler, XUIKeyStrokes } from "xjs-hotkeys";
 
 xjs.ready().then(() => {

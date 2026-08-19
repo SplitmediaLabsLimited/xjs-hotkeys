@@ -4,7 +4,7 @@ import './css/index.css';
 import registerServiceWorker from './registerServiceWorker';
 import KeyStrokeHandler from './js/lib/KeyStrokeHandler.js';
 import XUIKeyStrokes from './js/component/XUIKeyStrokes.js';
-import xjs from '../node_modules/xjs-framework/dist/xjs-es2015.min.js';
+import xjs from '@splitmedialabs/xjs/dist/xjs-es2015.min.js';
 
 document.onselectstart = function(event) {
   var nodeName = event.target.nodeName;

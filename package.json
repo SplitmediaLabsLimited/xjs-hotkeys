@@ -4,19 +4,19 @@
   "version": "0.1.1",
   "private": true,
   "dependencies": {
-    "evemit": "^1.0.2",
-    "node-sass": "^4.14.1",
-    "postinstall-build": "^5.0.1",
-    "xjs-framework": "git+https://github.com/xjsframework/xjs.git#2.11.0"
+    "evemit": "^1.0.2"
   },
   "devDependencies": {
+    "@splitmedialabs/xjs": "^2.14.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
+    "cross-env": "^10.1.0",
     "css-loader": "^3.5.3",
     "file-loader": "^0.11.2",
+    "node-sass": "npm:sass@1.69.7",
     "noop-webpack-plugin": "^1.0.1",
     "prettier": "^1.19.1",
     "react": "^16.13.0",
@@ -27,18 +27,32 @@
     "svg-url-loader": "^2.3.1",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "url-loader": "^4.1.0",
-    "webpack": "^3.12.0"
+    "webpack": "3.12.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/xjsframework/xjs-hotkeys.git"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "deps:local": "node scripts/switch-local-deps.js local",
+    "deps:packaged": "node scripts/switch-local-deps.js packaged",
+    "deps:status": "node scripts/switch-local-deps.js status",
+    "start": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider --preserve-symlinks\" react-scripts start",
     "prettify": "prettier --write \"src/**/*.js\" --single-quote --jsx-bracket-same-line --print-width 100",
-    "buildReactScripts": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "buildReactScripts": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
+    "test": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "build": "npm run prettify && webpack --env.production"
-  }
+    "build": "yarn prettify && cross-env NODE_OPTIONS=--openssl-legacy-provider webpack --env.production"
+  },
+  "resolutions": {
+    "lodash": "4.17.21",
+    "js-yaml": "3.15.1",
+    "minimatch": "3.1.2",
+    "brace-expansion": "1.1.12"
+  },
+  "volta": {
+    "node": "24.15.0",
+    "yarn": "4.14.1"
+  },
+  "packageManager": "yarn@4.14.1+sha512.64df448055b2d37ba269d7db535a469b8da93f8ef1140c25fd7a83c00a8fbaacb214ca0e02553b92a2c54cef78bb67d0b4817fab02001df0e24fac0faccc3b42"
 }
