@@ -6,23 +6,6 @@ This is a small library for handling key and midi strokes specifically for Xspli
 
 Build the library with `yarn build` (Webpack production bundle in `dist/`). Run the demo with `yarn start`.
 
-## Local xjs dependency
-
-The demo app imports `@splitmedialabs/xjs` as a dev dependency. By default it uses the packaged npm release (`^2.14.0`). To test against a sibling `../xjs` checkout:
-
-```powershell
-yarn deps:local
-yarn start
-```
-
-Switch back to the npm package:
-
-```powershell
-yarn deps:packaged
-```
-
-Check the current mode with `yarn deps:status`. Packaged version pins live in `scripts/switch-local-deps.config.js`.
-
 ### KeyStrokeHandler object needs xjs to fully function.
 - most methods of the class are static
 - this handles both recieving and emitting key and midi strokes.
@@ -56,16 +39,11 @@ offDown(event, handler)
 
 ### Example usage
 
-#### package.json (Macros consumer example)
-
-Use `yarn deps:local` in macro-executor, or declare portal links manually:
-
+#### package.json
 ```
 "xjs-hotkeys": "portal:../xjs-hotkeys",
-"@splitmedialabs/xjs": "portal:../xjs"
+"@splitmedialabs/xjs": "^2.14.0"
 ```
-
-For packaged installs, Macros defaults to npm xjs plus the `#MACROS` git branch of xjs-hotkeys.
 
 #### sample.js
 ```
